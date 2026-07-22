@@ -1142,8 +1142,9 @@ function finishLesson(){
   const stars = mistakes===0 ? 3 : mistakes<=2 ? 2 : 1;
   const prev = S.lessonStars[lessonIdx]||0;
   const isNew = prev===0;
+  const gained = Math.max(0, stars - prev);
   if(stars > prev) S.lessonStars[lessonIdx] = stars;
-  S.stars += stars;
+  S.stars += gained;
   L.words.forEach(x=>{ if(!S.prog[x.w]) S.prog[x.w] = {box:1, due: today()+1}; });
   if(isNew) S.quest.learn = true;
   S.visits++;
@@ -1155,10 +1156,10 @@ function finishLesson(){
   if(newSticker){
     $('cheer-emoji').textContent = newSticker.emoji;
     $('cheer-title').textContent = 'ปลดล็อกสติกเกอร์ใหม่! 🎴';
-    $('cheer-text').textContent = `เก่งมาก! เรียนจบหมวดนี้ครบแล้ว ได้สติกเกอร์ "${newSticker.name}" ไปเก็บในสมุดสติกเกอร์เลย +${stars} ⭐`;
+    $('cheer-text').textContent = `เก่งมาก! เรียนจบหมวดนี้ครบแล้ว ได้สติกเกอร์ "${newSticker.name}" ไปเก็บในสมุดสติกเกอร์เลย` + (gained>0 ? ` +${gained} ⭐` : '');
   } else {
     $('cheer-emoji').textContent = stars===3 ? '🏆' : '🎉';
-    $('cheer-title').textContent = 'จบบทแล้ว! +' + stars + ' ⭐';
+    $('cheer-title').textContent = 'จบบทแล้ว!' + (gained>0 ? ' +' + gained + ' ⭐' : '');
     $('cheer-text').textContent = (stars===3
       ? 'เพอร์เฟกต์เลย ส้มโอกระโดดดีใจใหญ่!'
       : 'ที่พลาดไปไม่เป็นไรเลย เดี๋ยวคำพวกนั้นจะแวะกลับมาให้เจออีก')
@@ -1170,16 +1171,18 @@ function finishLesson(){
 }
 function finishReview(){
   const gain = mistakes===0 ? 2 : 1;
-  S.stars += gain;
+  const alreadyDoneToday = S.quest.review;
+  if(!alreadyDoneToday) S.stars += gain;
   S.quest.review = true;
   S.visits++;
   questProgressCheck();
   save();
   $('cheer-emoji').textContent = '🧠';
-  $('cheer-title').textContent = 'ทวนครบแล้ว! +' + gain + ' ⭐';
-  $('cheer-text').textContent = mistakes===0
+  $('cheer-title').textContent = 'ทวนครบแล้ว!' + (alreadyDoneToday ? '' : ' +' + gain + ' ⭐');
+  $('cheer-text').textContent = (mistakes===0
     ? 'แม่นทุกคำเลย คำพวกนี้เลื่อนขั้นกันใหญ่ 🌳'
-    : 'คำที่พลาดจะกลับมาให้ทวนถี่ขึ้น เดี๋ยวก็แม่นเหมือนกัน';
+    : 'คำที่พลาดจะกลับมาให้ทวนถี่ขึ้น เดี๋ยวก็แม่นเหมือนกัน')
+    + (alreadyDoneToday ? ' ทวนซ้ำเพื่อฝึกฝนเพิ่มได้เลยนะ (ดาวได้ไปแล้ววันนี้)' : '');
   $('learned-row').innerHTML = '';
   maybeBonusText();
   show('celebrate');
@@ -1240,14 +1243,15 @@ function flipMem(el, card){
   }
 }
 function finishMatch(){
-  S.stars += 1;
+  const alreadyDoneToday = S.quest.game;
+  if(!alreadyDoneToday) S.stars += 1;
   S.quest.game = true;
   S.visits++;
   questProgressCheck();
   save();
   $('cheer-emoji').textContent = '🃏';
-  $('cheer-title').textContent = 'จับคู่ครบ! +1 ⭐';
-  $('cheer-text').textContent = 'ความจำดีมากเลยนะเนี่ย';
+  $('cheer-title').textContent = 'จับคู่ครบ!' + (alreadyDoneToday ? '' : ' +1 ⭐');
+  $('cheer-text').textContent = 'ความจำดีมากเลยนะเนี่ย' + (alreadyDoneToday ? ' เล่นซ้ำฝึกความจำได้เรื่อยๆ เลย' : '');
   $('learned-row').innerHTML = '';
   maybeBonusText();
   show('celebrate');
