@@ -244,7 +244,7 @@
   <!-- ============ HOME ============ -->
   <div id="home">
     <div class="top">
-      <div class="logo">🏝️ เกาะคำศัพท์</div>
+      <div class="logo" id="logo">🏝️ เกาะคำศัพท์</div>
       <div class="chips">
         <span class="chip">⭐ <span id="star-count">0</span></span>
         <span class="chip">🎴 <span id="sticker-count">0</span>/<span id="sticker-total">0</span></span>
@@ -1332,4 +1332,17 @@ function openSound(){ $('sound-overlay').classList.remove('hidden'); }
 function closeSound(){ $('sound-overlay').classList.add('hidden'); }
 
 if(PROFILE){ renderHome(); show('home'); } else { show('login'); }
+
+/* ทางลับสำหรับพี่วิน: แตะโลโก้ 5 ครั้งเร็วๆ (ภายใน 1.5 วิ ต่อครั้ง) → เปิดหน้า Dashboard หลังบ้าน
+   ไม่ฝังรหัสในเกม หน้า Dashboard จะถามรหัสเอง เด็กแตะเล่นทั่วไปจะไม่บังเอิญเข้า */
+(function(){
+  const lg = document.getElementById('logo'); if(!lg) return;
+  let n = 0, last = 0;
+  lg.addEventListener('click', ()=>{
+    const now = Date.now();
+    n = (now - last <= 1500) ? n + 1 : 1;
+    last = now;
+    if(n >= 5){ n = 0; location.href = 'admin.html'; }
+  });
+})();
 </script>
