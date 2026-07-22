@@ -616,7 +616,10 @@ async function submitProfile(){
 
   if(btn){ btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังเช็คว่าเคยเล่นเครื่องอื่นมั้ย...'; }
   const restored = await fetchRestoredState(name, pin);
-  if(restored){ S = restored; save(); }
+  /* ดึงของจากหลังบ้านมาใช้เฉพาะเมื่อ "ก้าวหน้ากว่า" ที่มีในเครื่องนี้ (กันเล่น offline ในเครื่องนี้แล้วโดนของเก่าทับ)
+     ถ้าเครื่องนี้ล่าสุดกว่า เก็บของเครื่องไว้ แล้ว save() จะดันขึ้นหลังบ้านเองทับให้เป็นเวอร์ชันล่าสุด */
+  if(restored && (restored.daysDone||0) >= (S.daysDone||0)) S = restored;
+  save();
   if(btn){ btn.disabled = false; btn.textContent = 'เริ่มผจญภัยกันเลย! 🚀'; }
 
   renderHome();
@@ -859,7 +862,7 @@ function renderHome(){
   }
 
   if(nli === -1){
-    qh += questRow('🌱','เรียนคำใหม่','เรียนครบทุกบทแล้ว เก่งที่สุด! รอบทใหม่เร็วๆ นี้', q.learn, true, '');
+    qh += questRow('🌱','เรียนครบทุกบทแล้ว!','เก่งที่สุด! วันนี้แค่ทวนคำกับเล่นเกมก็รับโบนัสได้เลย', true, false, '');
   } else if(q.learn){
     qh += questRow('🌱','เรียนคำใหม่ 3 คำ','วันนี้ได้เพื่อนใหม่ครบแล้ว', true, false, '');
   } else {
@@ -926,7 +929,9 @@ function questRow(icon, title, desc, done, off, onclick){
 }
 function questProgressCheck(){
   const q = S.quest;
-  if(!q.bonus && q.review && q.learn && q.game){
+  /* เรียนครบทุกบทแล้ว ไม่มีบทใหม่ให้เรียน — ถือว่าเควสต์ "เรียนคำใหม่" สำเร็จโดยอัตโนมัติ ไม่งั้นโบนัสรายวันจะไม่มีวันครบ */
+  const learnDone = q.learn || nextLessonIdx()===-1;
+  if(!q.bonus && q.review && learnDone && q.game){
     q.bonus = true;
     S.stars += 1;
     S.daysDone += 1;
@@ -942,6 +947,7 @@ function goHome(){
 
 /* ================= lesson engine (teach -> match2 -> mix3) ================= */
 let L=null, lessonIdx=0, phase='meet', step=0, order=[], mistakes=0, roundWrong=0, target=null, mode='lesson';
+let answered=false; /* กันแตะซ้ำ/แตะพลาดในช่วงเสี้ยววินาทีหลังตอบถูก (ก่อนไปข้อถัดไป) ไม่ให้ทำลายชั้นความจำหรือข้ามคำ */
 
 function startLesson(i){
   L = LESSONS[i]; lessonIdx = i; mode='lesson';
@@ -965,6 +971,7 @@ function renderDots(){
 }
 function renderStep(){
   roundWrong = 0;
+  answered = false;
   renderDots();
   renderMiniBuddy();
   if(phase==='meet') renderMeet();
@@ -1051,6 +1058,7 @@ function renderSpell(){
   const slots = [...document.querySelectorAll('.slot')];
   document.querySelectorAll('.tile').forEach(t=>{
     t.onclick = ()=>{
+      if(answered) return; /* สะกดครบแล้ว แตะ tile ที่เหลือไม่นับ */
       const need = w[filled];
       if(t.dataset.ch === need){
         slots[filled].textContent = t.dataset.ch;
@@ -1058,6 +1066,7 @@ function renderSpell(){
         t.classList.add('used');
         filled++;
         if(filled === w.length){
+          answered = true;
           playWord(w);
           toast(pick(PRAISE),'good');
           sfxRight(); bounceMiniBuddy();
@@ -1083,7 +1092,9 @@ function bindChoices(isCorrect, onRight){
   const answerEl = [...document.querySelectorAll('.choice')].find(isCorrect);
   document.querySelectorAll('.choice').forEach(c=>{
     c.onclick = ()=>{
+      if(answered) return; /* ตอบไปแล้ว รอไปข้อถัดไป — แตะอะไรก็ไม่นับ */
       if(isCorrect(c)){
+        answered = true;
         c.classList.add('right');
         if(onRight) onRight(c);
         toast(pick(PRAISE), 'good');
@@ -1131,8 +1142,12 @@ function startReview(){
   order = queue.slice(0,7);
   order.forEach(w=>{
     const box = S.prog[w.w].box;
-    if(w.isPhrase){ REVIEW_TASK[w.w] = box<=2 ? 'pic' : 'word'; }
-    else{ REVIEW_TASK[w.w] = box<=1 ? 'pic' : box===2 ? 'word' : 'spell'; }
+    /* โหมดสะกดเหมาะกับคำเดี่ยวสั้นๆ ตัวพิมพ์เล็กล้วนเท่านั้น (cat, milk) —
+       คำหลายพยางค์/มีช่องว่าง/ตัวพิมพ์ใหญ่/ยาวเกินไป (police officer, Wednesday, P.E.) สะกดทีละตัวยากเกินไปสำหรับเด็กพื้นฐานศูนย์ */
+    const canSpell = !w.isPhrase && /^[a-z]+$/.test(w.w) && w.w.length<=8;
+    if(canSpell){ REVIEW_TASK[w.w] = box<=1 ? 'pic' : box===2 ? 'word' : 'spell'; }
+    else if(w.isPhrase){ REVIEW_TASK[w.w] = box<=2 ? 'pic' : 'word'; }
+    else{ REVIEW_TASK[w.w] = box<=1 ? 'pic' : 'word'; }
     /* วันแรกที่เพิ่งเรียนจบบท คำพวกนี้เพิ่งเจอโจทย์ "ฟัง→ชี้รูป" (pic) มาหมาดๆ ในบทเรียนแล้ว
        อุ่นเครื่องเลยขยับเป็น "ดูรูป→เลือกคำ" (word) แทน กันรู้สึกซ้ำกับสิ่งที่เพิ่งทำ */
     if(isWarmup && REVIEW_TASK[w.w]==='pic') REVIEW_TASK[w.w] = 'word';
@@ -1149,8 +1164,10 @@ function renderReviewRound(){
   else renderSpell();
 }
 function renderPickPicReview(pool){
-  const n = Math.min(4, pool.length);
-  const others = shuffle(pool.filter(w=>w.w!==target.w)).slice(0, n-1);
+  /* กันตัวลวงที่ใช้ "รูปเดียวกัน" กับคำตอบ (เช่น water💧 กับ "I want water."💧) ไม่งั้นเด็กแยกไม่ออก ตอบไม่ได้ */
+  const cand = pool.filter(w=>w.w!==target.w && w.e!==target.e);
+  const n = Math.min(4, cand.length+1);
+  const others = shuffle(cand).slice(0, n-1);
   const opts = shuffle([target, ...others]);
   $('prompt-area').innerHTML = `
     <div class="task">ฟังเสียงแล้วแตะรูปที่ใช่เลย</div>
@@ -1230,7 +1247,9 @@ function maybeBonusText(){
 /* ================= memory match ================= */
 let memOpen = [], memLock = false, memLeft = 0;
 function startMatch(){
-  const pool = shuffle(learnedList()).slice(0,3);
+  /* เลือก 3 คำที่ "รูปไม่ซ้ำกัน" เพื่อไม่ให้มีการ์ดรูปเหมือนกันจับคู่มั่วได้ */
+  const seen = new Set();
+  const pool = shuffle(learnedList()).filter(x=>{ if(seen.has(x.e)) return false; seen.add(x.e); return true; }).slice(0,3);
   memLeft = pool.length;
   memOpen = []; memLock = false;
   const cards = shuffle(pool.flatMap(x=>[
