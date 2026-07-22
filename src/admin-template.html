@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>ห้องเครื่องของพี่วิน · เกาะคำศัพท์</title>
+<style>
+  :root{
+    --sand:#FBF6EE; --card:#FFFFFF; --card-2:#FFF9F0;
+    --ink:#123B48; --ink-soft:#547079; --line:#EDE3D4;
+    --coral:#EF6461; --coral-ink:#C7413F;
+    --teal:#149E92; --gold:#EFA836; --amber:#E27C24; --sky:#3AA6C9;
+    --good-bg:#E4F4F1; --warn-bg:#FBEAD6; --coral-bg:#FBE4E2;
+    --shadow:0 1px 2px rgba(18,59,72,.06), 0 8px 24px rgba(18,59,72,.07);
+    --r:20px;
+    --disp:ui-rounded,"SF Pro Rounded","Baloo 2 Thai","Baloo 2",system-ui,sans-serif;
+    --body:-apple-system,"Segoe UI Variable","Segoe UI",system-ui,"Sarabun",sans-serif;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --sand:#0C242C; --card:#123138; --card-2:#153A41; --ink:#EAF5F2; --ink-soft:#9DBBC1; --line:#20505A;
+    --coral:#FF7E7A; --coral-ink:#FF9B98; --teal:#2FC0B1; --gold:#F5BC5A; --amber:#F0954A; --sky:#5FC2E0;
+    --good-bg:#123F3A; --warn-bg:#3A2C18; --coral-bg:#3A2020; --shadow:0 1px 2px rgba(0,0,0,.25), 0 10px 30px rgba(0,0,0,.35);}}
+  :root[data-theme="dark"]{
+    --sand:#0C242C; --card:#123138; --card-2:#153A41; --ink:#EAF5F2; --ink-soft:#9DBBC1; --line:#20505A;
+    --coral:#FF7E7A; --coral-ink:#FF9B98; --teal:#2FC0B1; --gold:#F5BC5A; --amber:#F0954A; --sky:#5FC2E0;
+    --good-bg:#123F3A; --warn-bg:#3A2C18; --coral-bg:#3A2020; --shadow:0 1px 2px rgba(0,0,0,.25), 0 10px 30px rgba(0,0,0,.35);}
+  :root[data-theme="light"]{
+    --sand:#FBF6EE; --card:#FFFFFF; --card-2:#FFF9F0; --ink:#123B48; --ink-soft:#547079; --line:#EDE3D4;
+    --coral:#EF6461; --coral-ink:#C7413F; --teal:#149E92; --gold:#EFA836; --amber:#E27C24; --sky:#3AA6C9;
+    --good-bg:#E4F4F1; --warn-bg:#FBEAD6; --coral-bg:#FBE4E2; --shadow:0 1px 2px rgba(18,59,72,.06), 0 8px 24px rgba(18,59,72,.07);}
+  *{box-sizing:border-box;} html,body{margin:0;}
+  body{
+    font-family:var(--body); color:var(--ink); line-height:1.5; font-variant-numeric:tabular-nums;
+    background:
+      radial-gradient(120% 60% at 100% 0%, color-mix(in srgb,var(--sky) 16%, transparent), transparent 60%),
+      radial-gradient(90% 50% at 0% 0%, color-mix(in srgb,var(--coral) 12%, transparent), transparent 55%),
+      var(--sand);
+    min-height:100vh; padding:20px 16px 60px;
+  }
+  .inner{max-width:960px; margin:0 auto;}
+  header.top{display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:18px;}
+  .title h1{font-family:var(--disp); font-weight:800; font-size:clamp(23px,5vw,31px); margin:0; letter-spacing:-.01em;}
+  .title p{margin:4px 0 0; color:var(--ink-soft); font-size:14px;}
+  .refresh{font-family:var(--disp); font-weight:700; font-size:13px; color:var(--ink); background:var(--card); border:1.5px solid var(--line); border-radius:999px; padding:8px 15px; cursor:pointer; display:flex; align-items:center; gap:7px; white-space:nowrap;}
+  .refresh:hover{border-color:var(--coral);}
+  .updated{font-size:12.5px; color:var(--ink-soft); display:flex; align-items:center; gap:7px;}
+  .live-dot{width:8px;height:8px;border-radius:50%; background:var(--teal);}
+
+  .players{display:flex; gap:8px; margin-bottom:8px; flex-wrap:wrap;}
+  .pchip{display:flex; align-items:center; gap:9px; padding:8px 14px 8px 8px; border-radius:999px; background:var(--card); border:1.5px solid var(--line); cursor:pointer; color:var(--ink); font-family:var(--disp); font-weight:700; font-size:14.5px;}
+  .pchip:hover{border-color:var(--coral);}
+  .pchip .av{width:30px;height:30px;border-radius:50%; display:grid;place-items:center; font-size:15px; background:var(--sky); color:#fff;}
+  .pchip[aria-pressed="true"]{border-color:var(--coral); background:var(--coral-bg);}
+  .pchip small{font-family:var(--body); font-weight:500; color:var(--ink-soft); font-size:11.5px;}
+  .test-toggle{background:none;border:1.5px dashed var(--line); color:var(--ink-soft); border-radius:999px; padding:8px 14px; font-family:var(--disp); font-weight:700; font-size:12.5px; cursor:pointer;}
+  .test-note{font-size:11.5px; color:var(--ink-soft); margin:2px 0 16px;}
+
+  .insight{display:flex; gap:14px; align-items:flex-start; background:linear-gradient(120deg,var(--card-2),var(--card)); border:1.5px solid var(--line); border-radius:var(--r); padding:16px 18px; box-shadow:var(--shadow); margin-bottom:16px;}
+  .insight .buddy{font-size:34px; line-height:1; flex:none;}
+  .insight .who{font-family:var(--disp); font-weight:800; font-size:12px; letter-spacing:.05em; color:var(--teal); margin-bottom:3px;}
+  .insight .msg{font-size:15.5px;} .insight .msg b{color:var(--coral-ink);}
+
+  .kpis{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:16px;}
+  @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr);}}
+  .kpi{background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:14px 15px; box-shadow:var(--shadow); position:relative; overflow:hidden;}
+  .kpi .lab{font-size:12.5px; color:var(--ink-soft); display:flex; gap:6px; margin-bottom:7px;}
+  .kpi .num{font-family:var(--disp); font-weight:800; font-size:27px; line-height:1; letter-spacing:-.02em;}
+  .kpi .num small{font-size:14px; font-weight:700; color:var(--ink-soft);}
+  .kpi .sub{font-size:12px; margin-top:6px; font-weight:600;}
+  .up{color:var(--teal);} .flat{color:var(--ink-soft);}
+  .kpi .bar{position:absolute; left:0; top:0; bottom:0; width:4px;}
+
+  .grid2{display:grid; grid-template-columns:1fr; gap:16px;}
+  @media(min-width:680px){.grid2{grid-template-columns:1.35fr 1fr;}}
+  .panel{background:var(--card); border:1.5px solid var(--line); border-radius:var(--r); padding:16px 18px; box-shadow:var(--shadow); margin-bottom:16px;}
+  .panel h2{font-family:var(--disp); font-weight:800; font-size:16.5px; margin:0 0 2px; display:flex; gap:8px;}
+  .panel .hint{color:var(--ink-soft); font-size:12.5px; margin:0 0 14px;}
+  .empty-note{color:var(--ink-soft); font-size:13px; text-align:center; padding:22px 8px; background:var(--sand); border-radius:12px;}
+
+  .chart{width:100%; height:180px; display:block;}
+  .chart .grid-line{stroke:var(--line); stroke-width:1;}
+  .chart .linep{fill:none; stroke:var(--coral); stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round;}
+  .chart .end{fill:var(--coral); stroke:var(--card); stroke-width:3;}
+  .chart text{fill:var(--ink-soft); font-size:10px; font-family:var(--body);}
+
+  .heat{display:grid; grid-template-columns:repeat(7,1fr); gap:5px;}
+  .heat .cell{aspect-ratio:1; border-radius:5px; background:var(--sand); border:1px solid var(--line);}
+  .heat .cell.l1{background:color-mix(in srgb,var(--teal) 30%,var(--card));}
+  .heat .cell.l2{background:color-mix(in srgb,var(--teal) 55%,var(--card));}
+  .heat .cell.l3{background:var(--teal);}
+  .heat-legend{display:flex; align-items:center; gap:6px; font-size:11.5px; color:var(--ink-soft); margin-top:10px; justify-content:flex-end;}
+  .heat-legend .cell{width:12px;height:12px;border-radius:3px; display:inline-block;}
+
+  .needs{display:flex; flex-direction:column; gap:9px;}
+  .need{display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:14px; background:var(--coral-bg);}
+  .need .emo{font-size:23px; flex:none; width:30px; text-align:center;}
+  .need .w{font-family:var(--disp); font-weight:800; font-size:15px;}
+  .need .th{font-size:12.5px; color:var(--ink-soft);}
+  .need .tag{margin-left:auto; font-size:11.5px; font-weight:700; color:var(--coral-ink); background:color-mix(in srgb,var(--coral) 18%,transparent); padding:4px 9px; border-radius:999px; white-space:nowrap;}
+  .need.ok{background:var(--good-bg);} .need.ok .tag{color:var(--teal); background:color-mix(in srgb,var(--teal) 16%,transparent);}
+
+  .units{display:grid; grid-template-columns:repeat(auto-fill,minmax(62px,1fr)); gap:8px; margin-top:12px;}
+  .unit{aspect-ratio:1; border-radius:13px; background:var(--sand); border:1.5px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; position:relative; overflow:hidden;}
+  .unit .ue{font-size:19px; line-height:1; position:relative;}
+  .unit .up-fill{position:absolute; left:0; right:0; bottom:0; background:color-mix(in srgb,var(--teal) 24%,transparent);}
+  .unit.done{border-color:var(--teal);} .unit.done .badge{position:absolute; top:3px; right:4px; font-size:10px;}
+  .unit .un{font-size:9px; color:var(--ink-soft); position:relative;}
+  .unit.locked{opacity:.38;}
+
+  footer.foot{margin-top:22px; font-size:12.5px; color:var(--ink-soft); text-align:center; line-height:1.7;}
+  .family{display:inline-flex; gap:6px; align-items:center; background:var(--card); border:1.5px solid var(--line); border-radius:999px; padding:7px 15px; font-family:var(--disp); font-weight:700; color:var(--ink); box-shadow:var(--shadow);}
+
+  /* key gate */
+  .gate{max-width:420px; margin:8vh auto 0; background:var(--card); border:1.5px solid var(--line); border-radius:var(--r); padding:26px 24px; box-shadow:var(--shadow); text-align:center;}
+  .gate h1{font-family:var(--disp); font-weight:800; font-size:24px; margin:0 0 6px;}
+  .gate p{color:var(--ink-soft); font-size:13.5px; margin:0 0 18px;}
+  .gate input{width:100%; padding:13px 15px; border:1.5px solid var(--line); border-radius:13px; font-size:16px; font-family:var(--body); background:var(--sand); color:var(--ink); text-align:center; letter-spacing:.06em;}
+  .gate button{margin-top:14px; width:100%; padding:13px; border:0; border-radius:13px; background:var(--coral); color:#fff; font-family:var(--disp); font-weight:800; font-size:16px; cursor:pointer;}
+  .gate .err{color:var(--coral-ink); font-size:13px; margin-top:12px; min-height:18px;}
+  .loading{text-align:center; color:var(--ink-soft); padding:12vh 0; font-family:var(--disp); font-weight:700;}
+  .spinner{width:34px;height:34px;border:4px solid var(--line); border-top-color:var(--coral); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 14px;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  :focus-visible{outline:3px solid var(--sky); outline-offset:2px; border-radius:8px;}
+</style>
+</head>
+<body>
+<div class="inner" id="root">
+  <div class="loading"><div class="spinner"></div>กำลังโหลดข้อมูล...</div>
+</div>
+
+<script>
+const BACKEND_URL='__BACKEND_URL__';
+const D=__ADMIN_DATA__;                 // {META, UNITS, STICKERS, WORD_TOTAL, LESSON_TOTAL, UNIT_TOTAL}
+const $=s=>document.getElementById(s);
+function today(){ return Math.floor((Date.now()-new Date().getTimezoneOffset()*60000)/86400000); }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+let PLAYERS=[], cur=0, showTests=false;
+
+function getKey(){
+  const u=new URLSearchParams(location.search).get('key');
+  if(u){ try{localStorage.setItem('kks-admin-key',u);}catch(e){} return u; }
+  try{ return localStorage.getItem('kks-admin-key')||''; }catch(e){ return ''; }
+}
+function keyGate(msg){
+  $('root').innerHTML=`<div class="gate">
+    <h1>🔒 ห้องเครื่องของพี่วิน</h1>
+    <p>ใส่รหัสลับเพื่อดูความคืบหน้าของคนที่กำลังเรียน</p>
+    <input id="k" type="password" placeholder="รหัสลับ" autocomplete="off">
+    <button id="kb">เข้าดูข้อมูล</button>
+    <div class="err">${msg||''}</div></div>`;
+  $('kb').onclick=()=>{ const v=$('k').value.trim(); if(!v) return; try{localStorage.setItem('kks-admin-key',v);}catch(e){} load(); };
+  $('k').onkeydown=e=>{ if(e.key==='Enter') $('kb').click(); };
+}
+
+async function load(){
+  const key=getKey();
+  if(!key){ keyGate(); return; }
+  $('root').innerHTML=`<div class="loading"><div class="spinner"></div>กำลังโหลดข้อมูล...</div>`;
+  try{
+    const res=await fetch(BACKEND_URL+'?action=admin&key='+encodeURIComponent(key));
+    const data=await res.json();
+    if(data.error){ try{localStorage.removeItem('kks-admin-key');}catch(e){} keyGate('รหัสไม่ถูกต้อง ลองใหม่นะ'); return; }
+    parse(data); renderShell();
+  }catch(e){ keyGate('โหลดข้อมูลไม่ได้ (เน็ตมีปัญหา?) ลองรีเฟรชอีกที'); }
+}
+
+function isTest(name){ return /qa|test|lazy|fix|ทดสอบ|จบครบ|^chicha$/i.test(name) || String(name).trim().length<=1; }
+
+function parse(data){
+  const L=data.latest.slice(1), H=data.history.slice(1);
+  const hist={};
+  H.forEach(r=>{ const nm=r[1]; (hist[nm]=hist[nm]||[]).push({date:new Date(r[0]), days:+r[2]||0, stars:+r[3]||0, learned:+r[4]||0, mastered:+r[5]||0}); });
+  Object.values(hist).forEach(a=>a.sort((x,y)=>x.date-y.date));
+  PLAYERS = L.map(r=>{
+    let S={}; try{ S=JSON.parse(r[9]||'{}'); }catch(e){ S={}; }
+    const prog=S.prog||{};
+    return {
+      name:r[0], pin:r[8], lastPlayed:r[1]?new Date(r[1]):null, summary:r[2]||'',
+      stars:+r[3]||0, daysDone:+r[4]||0, wordsLearned:+r[5]||0, mastered:+r[6]||0,
+      stickers:(S.stickers||[]).length, lessonStars:S.lessonStars||{}, prog:prog,
+      hist:hist[r[0]]||[], test:isTest(r[0])
+    };
+  });
+  // order: real (by mastered desc) first, tests after
+  PLAYERS.sort((a,b)=> (a.test-b.test) || (b.mastered-a.mastered) || (b.daysDone-a.daysDone));
+  cur = PLAYERS.findIndex(p=>!p.test); if(cur<0) cur=0;
+}
+
+function relTime(d){
+  if(!d) return 'ยังไม่เคยเล่น';
+  const ms=Date.now()-d.getTime(), m=Math.floor(ms/60000), h=Math.floor(ms/3600000), day=Math.floor(ms/86400000);
+  if(m<2) return 'เมื่อกี้นี้';
+  if(m<60) return m+' นาทีที่แล้ว';
+  if(h<24) return h+' ชั่วโมงที่แล้ว';
+  if(day===1) return 'เมื่อวานนี้';
+  return day+' วันที่แล้ว';
+}
+function activeToday(p){ return p.lastPlayed && (Date.now()-p.lastPlayed.getTime()<86400000); }
+
+function streakOf(p){
+  if(!p.hist.length) return 0;
+  const dayNums=new Set(p.hist.map(h=>Math.floor((h.date.getTime()-new Date().getTimezoneOffset()*60000)/86400000)));
+  let t=today(), s=0;
+  if(!dayNums.has(t)) t=t-1;              // allow "yesterday" as still-alive streak
+  while(dayNums.has(t)){ s++; t--; }
+  return s;
+}
+function masteredFromProg(p){ let n=0; for(const w in p.prog){ if((p.prog[w].box||0)>=3) n++; } return n; }
+function lessonsDone(p){ let n=0; for(const k in p.lessonStars){ if((p.lessonStars[k]||0)>0) n++; } return n; }
+function nextLessonIdx(p){ for(let i=0;i<D.LESSON_TOTAL;i++){ if(!p.lessonStars[i]) return i; } return -1; }
+
+function needsList(p){
+  const t=today(), arr=[];
+  for(const w in p.prog){
+    const pr=p.prog[w], box=pr.box||1, due=pr.due||0;
+    const overdue = due<=t;
+    if(box<=2 || overdue){
+      const m=D.META[w]||['', '❓'];
+      let tag = box===1?'ยังไม่แม่น' : (box===2? (overdue?'ถึงคิวทวน':'เกือบแม่นแล้ว') : 'ถึงคิวทวน');
+      arr.push({w, th:m[0], e:m[1], box, due, overdue, score: box*100 + (overdue?0:50) + due, tag});
+    }
+  }
+  arr.sort((a,b)=>a.score-b.score);
+  return arr;
+}
+
+function renderShell(){
+  $('root').innerHTML=`
+    <header class="top">
+      <div class="title"><h1>🏝️ ห้องเครื่องของพี่วิน</h1>
+        <p>ดูความคืบหน้าของคนที่กำลังเรียน — ไม่มีคะแนนสอบ ไม่มีการเปรียบเทียบ แค่รู้ว่าช่วยตรงไหนได้</p></div>
+      <button class="refresh" id="refresh">🔄 รีเฟรช</button>
+    </header>
+    <div class="updated"><span class="live-dot"></span> ดึงข้อมูลเมื่อ <b id="u-time"></b></div>
+    <div class="players" id="players"></div>
+    <div id="test-area"></div>
+    <div id="body"></div>
+    <footer class="foot" id="foot"></footer>`;
+  $('refresh').onclick=load;
+  const now=new Date();
+  $('u-time').textContent=now.toLocaleString('th-TH',{hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});
+  renderPlayers(); renderBody(); renderFoot();
+}
+
+function renderPlayers(){
+  const reals=PLAYERS.filter(p=>!p.test), tests=PLAYERS.filter(p=>p.test);
+  const chip=(p)=>{ const idx=PLAYERS.indexOf(p);
+    return `<button class="pchip" data-i="${idx}" aria-pressed="${idx===cur}">
+      <span class="av">${p.test?'🧪':'🧒'}</span>
+      <span>${esc(p.name)}<br><small>${p.mastered} คำ · ${p.daysDone} วัน</small></span></button>`; };
+  let html = reals.map(chip).join('');
+  if(!reals.length) html += `<div class="test-note">ยังไม่มีผู้เล่นจริง — ข้อมูลจะขึ้นเมื่อหลานเริ่มเล่น</div>`;
+  $('players').innerHTML = html;
+  let ta='';
+  if(tests.length){
+    ta += `<button class="test-toggle" id="tt">${showTests?'▾ ซ่อน':'▸ แสดง'}แถวทดสอบ (${tests.length})</button>`;
+    if(showTests) ta += `<div class="players" style="margin-top:8px">${tests.map(chip).join('')}</div>`;
+    ta += `<div class="test-note">🧪 แถวทดสอบจากตอนพัฒนา — บอกผมได้ว่าลบอันไหนได้บ้าง</div>`;
+  }
+  $('test-area').innerHTML=ta;
+  const tt=$('tt'); if(tt) tt.onclick=()=>{ showTests=!showTests; renderPlayers(); };
+  document.querySelectorAll('.pchip').forEach(b=>b.onclick=()=>{ cur=+b.dataset.i; renderPlayers(); renderBody(); });
+}
+
+function renderBody(){
+  const p=PLAYERS[cur];
+  if(!p){ $('body').innerHTML=`<div class="panel"><div class="empty-note">ยังไม่มีข้อมูลผู้เล่น</div></div>`; return; }
+  const mastered=Math.max(p.mastered, masteredFromProg(p));
+  const ldone=Math.max(lessonsDone(p), 0);
+  const streak=streakOf(p);
+  const needs=needsList(p);
+  const nli=nextLessonIdx(p);
+
+  // insight (generated from real numbers)
+  let ins;
+  if(mastered===0 && p.daysDone===0){
+    ins = `<b>${esc(p.name)}</b>เพิ่งเริ่มต้น ยังเล่นไม่มากพอให้สรุป — ลองชวนเล่นวันละ 5-10 นาทีทุกวันนะ เดี๋ยวข้อมูลจะค่อยๆ ขึ้นตรงนี้`;
+  } else {
+    const lessonPos = nli===-1?`เรียนครบทุกบทแล้ว เก่งสุดๆ`:`เรียนถึงบทที่ ${nli+1}/${D.LESSON_TOTAL}`;
+    const streakTxt = streak>=2?` เล่นต่อเนื่อง <b>${streak} วันติด</b> 🔥`:(activeToday(p)?` วันนี้ก็เล่นแล้ว`:` (ไม่ได้เล่นมา ${relTime(p.lastPlayed)})`);
+    const needTxt = needs.length?` ตอนนี้มี <b>${needs.length} คำ</b>ที่ยังต้องช่วย ลองชวนพูดคำพวกนี้ในชีวิตจริงดูนะ`:` ทุกคำที่เรียนไปแม่นดีหมดเลย 👏`;
+    ins = `<b>${esc(p.name)}</b> แม่นแล้ว <b>${mastered} คำ</b> · ${lessonPos}.${streakTxt}.${needTxt}`;
+  }
+
+  const kpi=[
+    {lab:'🔥 เล่นต่อเนื่อง', num:streak, unit:' วัน', sub:streak>0?'สม่ำเสมอดีมาก':'ยังไม่เริ่ม streak', cls:streak>0?'up':'flat', bar:'var(--gold)'},
+    {lab:'🕐 เล่นล่าสุด', txt:relTime(p.lastPlayed), sub:activeToday(p)?'● เล่นวันนี้แล้ว':'ยังไม่ได้เล่นวันนี้', cls:activeToday(p)?'up':'flat', bar:activeToday(p)?'var(--teal)':'var(--ink-soft)'},
+    {lab:'🎯 คำที่จำได้แม่น', num:mastered, unit:'/'+D.WORD_TOTAL, sub:'จากทั้งหมด '+D.WORD_TOTAL+' คำ', cls:'flat', bar:'var(--teal)'},
+    {lab:'📚 บทเรียน', num:ldone, unit:'/'+D.LESSON_TOTAL, sub:'⭐ '+p.stars+' · 🎴 '+p.stickers+'/'+D.UNIT_TOTAL, cls:'flat', bar:'var(--coral)'},
+  ];
+  const kpiHtml=kpi.map(c=>`<div class="kpi"><span class="bar" style="background:${c.bar}"></span>
+    <div class="lab">${c.lab}</div>
+    <div class="num">${c.txt?('<span style="font-size:18px">'+esc(c.txt)+'</span>'):c.num}${c.unit?'<small>'+c.unit+'</small>':''}</div>
+    <div class="sub ${c.cls}">${c.sub}</div></div>`).join('');
+
+  $('body').innerHTML=`
+    <div class="insight"><div class="buddy">🐱</div>
+      <div><div class="who">ส้มโอสรุปให้</div><div class="msg">${ins}</div></div></div>
+    <div class="kpis">${kpiHtml}</div>
+    <div class="grid2">
+      <div class="panel"><h2>📈 เส้นทางการเรียนรู้</h2>
+        <p class="hint">จำนวนคำที่แม่นแล้วสะสมในแต่ละวันที่เล่นสำเร็จ</p>
+        <div id="chart-slot"></div></div>
+      <div class="panel"><h2>🔥 วันที่เล่นสำเร็จ</h2>
+        <p class="hint">แต่ละช่องคือ 1 วัน · เขียว = วันที่ทำภารกิจครบ</p>
+        <div id="heat-slot"></div></div>
+    </div>
+    <div class="panel"><h2>🎯 คำที่ยังต้องช่วย</h2>
+      <p class="hint">คำที่ยังไม่แม่นหรือถึงคิวทวน — ชวนหลานพูดคำพวกนี้ตอนอยู่บ้านดูนะ</p>
+      <div id="needs-slot"></div></div>
+    <div class="panel"><h2>🗺️ แผนที่ความคืบหน้า ${D.UNIT_TOTAL} หมวด</h2>
+      <p class="hint">ขอบเขียว = ได้สติกเกอร์แล้ว · แถบเขียวด้านล่าง = เรียนไปกี่ % ของหมวด</p>
+      <div class="units" id="units-slot"></div></div>`;
+  renderChart(p); renderHeat(p); renderNeeds(needs); renderUnits(p);
+}
+
+function renderChart(p){
+  const pts=p.hist.filter(h=>h.mastered!=null);
+  if(pts.length<2){ $('chart-slot').innerHTML=`<div class="empty-note">เล่นสำเร็จให้ครบหลายวันก่อน กราฟจะค่อยๆ โตขึ้นตรงนี้ 🌱</div>`; return; }
+  const data=pts.map(h=>h.mastered), W=320,H=180,pL=8,pR=8,pT=14,pB=18;
+  const max=Math.max(...data,1);
+  const x=i=>pL+(i/(data.length-1))*(W-pL-pR), y=v=>pT+(1-v/max)*(H-pT-pB);
+  let line=data.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+  let area='M'+x(0).toFixed(1)+' '+y(data[0]).toFixed(1)+' '+data.map((v,i)=>'L'+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ')+' L'+x(data.length-1).toFixed(1)+' '+(H-pB)+' L'+x(0).toFixed(1)+' '+(H-pB)+' Z';
+  let grid=''; for(let g=0;g<=3;g++){const gy=(pT+g/3*(H-pT-pB)).toFixed(1); grid+=`<line class="grid-line" x1="${pL}" y1="${gy}" x2="${W-pR}" y2="${gy}"/>`;}
+  const ex=x(data.length-1), ey=y(data[data.length-1]);
+  $('chart-slot').innerHTML=`<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <defs><linearGradient id="g" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="var(--coral)" stop-opacity=".3"/><stop offset="1" stop-color="var(--coral)" stop-opacity=".02"/></linearGradient></defs>
+    ${grid}<path d="${area}" fill="url(#g)"/><path class="linep" d="${line}"/>
+    <circle class="end" cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="4.5"/>
+    <text x="${(ex-4).toFixed(1)}" y="${(ey-9).toFixed(1)}" text-anchor="end" style="fill:var(--coral-ink);font-weight:700">${data[data.length-1]} คำ</text></svg>`;
+}
+
+function renderHeat(p){
+  const days=new Set(p.hist.map(h=>Math.floor((h.date.getTime()-new Date().getTimezoneOffset()*60000)/86400000)));
+  if(!days.size){ $('heat-slot').innerHTML=`<div class="empty-note">ยังไม่มีวันที่เล่นสำเร็จเลย</div>`; return; }
+  const t=today(); let cells='';
+  for(let i=34;i>=0;i--){ const d=t-i; cells+=`<div class="cell ${days.has(d)?'l3':''}"></div>`; }
+  $('heat-slot').innerHTML=`<div class="heat">${cells}</div>
+    <div class="heat-legend">35 วันล่าสุด · เล่นสำเร็จ ${p.hist.length} วัน</div>`;
+}
+
+function renderNeeds(needs){
+  if(!needs.length){ $('needs-slot').innerHTML=`<div class="empty-note">ยังไม่มีคำที่ต้องช่วยเป็นพิเศษ — เก่งมาก! 👏</div>`; return; }
+  const top=needs.slice(0,10);
+  $('needs-slot').innerHTML=`<div class="needs">`+top.map(n=>`<div class="need">
+    <span class="emo">${n.e}</span>
+    <div><div class="w">${esc(n.w)}</div><div class="th">${esc(n.th)}</div></div>
+    <span class="tag">${n.tag}</span></div>`).join('')+`</div>`;
+}
+
+function renderUnits(p){
+  let html='';
+  for(let u=0;u<D.UNITS.length;u++){
+    const [emoji,,start,count]=D.UNITS[u];
+    let done=0; for(let i=start;i<start+count;i++){ if((p.lessonStars[i]||0)>0) done++; }
+    const pct=Math.round(done/count*100);
+    let cls='unit', badge='';
+    const started = (p.lessonStars[start]||0)>0 || start===0 || (p.lessonStars[start-1]||0)>0;
+    if(done===count){ cls+=' done'; badge='<span class="badge">🎴</span>'; }
+    else if(done===0 && !started){ cls+=' locked'; }
+    html+=`<div class="${cls}" title="${esc(D.UNITS[u][1])} · ${done}/${count} บท">
+      <div class="up-fill" style="height:${pct}%"></div>${badge}
+      <span class="ue">${emoji}</span><span class="un">${u+1}</span></div>`;
+  }
+  $('units-slot').innerHTML=html;
+}
+
+function renderFoot(){
+  const reals=PLAYERS.filter(p=>!p.test);
+  const totalWords=reals.reduce((s,p)=>s+Math.max(p.mastered,0),0);
+  const totalDays=reals.reduce((s,p)=>s+p.daysDone,0);
+  $('foot').innerHTML=`
+    ${reals.length?`<div class="family">👨‍👩‍👧 รวมทั้งบ้าน แม่นไปแล้ว <span style="color:var(--coral-ink)">${totalWords} คำ</span> · เล่นสำเร็จรวม ${totalDays} วัน</div>`:''}
+    <p style="margin:14px 0 0;">🔒 หน้านี้ดูอย่างเดียว · ข้อมูลสดจากหลังบ้าน · <a href="https://tanawint-cloud.github.io/koh-kam-sap/" style="color:var(--sky)">ไปหน้าเกม</a></p>`;
+}
+
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,1335 @@
+<meta charset="utf-8">
+<title>เกาะคำศัพท์ 🏝️</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<style>
+  :root{
+    --ground:#F1F8F5;
+    --card:#FFFFFF;
+    --ink:#22384E;
+    --ink-soft:#5B7186;
+    --coral:#FF6B81;
+    --coral-deep:#E84D66;
+    --sun:#FFB84D;
+    --leaf:#3EC48E;
+    --leaf-deep:#2BA476;
+    --sky:#58A6E8;
+    --line:#DCEAE3;
+    --shadow:0 4px 0 rgba(34,56,78,.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:'Sukhumvit Set','Noto Sans Thai','Thonburi',-apple-system,'Segoe UI',sans-serif;
+    background:linear-gradient(180deg,#D9F0FF 0%,var(--ground) 34%);
+    color:var(--ink);
+    display:flex;justify-content:center;
+    min-height:100dvh;
+  }
+  .app{width:100%;max-width:430px;padding:16px 16px 32px;display:flex;flex-direction:column;gap:14px}
+  .en{font-family:'Arial Rounded MT Bold','Verdana Rounded','Trebuchet MS',sans-serif;letter-spacing:.02em}
+
+  .top{display:flex;align-items:center;justify-content:space-between}
+  .logo{font-size:1.05rem;font-weight:700}
+  .logo small{display:block;font-size:.68rem;font-weight:400;color:var(--ink-soft)}
+  .chips{display:flex;gap:6px}
+  .chip{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:5px 10px;font-size:.8rem;font-weight:700;box-shadow:var(--shadow);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .buddy{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:14px 16px;display:flex;gap:14px;align-items:center;box-shadow:var(--shadow)}
+  .buddy .face{
+    width:72px;height:72px;flex:none;border-radius:50%;
+    background:radial-gradient(circle at 32% 28%,#FFE3B3,var(--sun));
+    display:flex;align-items:center;justify-content:center;font-size:2.3rem;
+    border:3px solid #FFD48A;
+  }
+  .buddy.cheer .face{animation:bounce .55s ease}
+  @keyframes bounce{0%,100%{transform:translateY(0)}35%{transform:translateY(-12px) rotate(-6deg)}70%{transform:translateY(0) rotate(4deg)}}
+  .bubble{position:relative;background:var(--ground);border-radius:16px;padding:9px 13px;font-size:.88rem;line-height:1.5;flex:1}
+  .bubble::before{content:'';position:absolute;left:-8px;top:24px;border:8px solid transparent;border-right-color:var(--ground);border-left:0}
+  .buddy-meta{font-size:.72rem;color:var(--ink-soft);margin-top:4px}
+
+  /* quest card */
+  .quest-card{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:16px;box-shadow:var(--shadow)}
+  .quest-card h2{font-size:.95rem;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .quest-card h2 .day-badge{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--leaf-deep);background:#E9FAF2;border-radius:999px;padding:3px 10px}
+  .quest{display:flex;align-items:center;gap:12px;width:100%;background:var(--ground);border:2px solid transparent;border-radius:16px;padding:11px 13px;margin-bottom:8px;font-family:inherit;color:inherit;text-align:left;cursor:pointer;transition:transform .12s ease}
+  .quest:active{transform:scale(.98)}
+  .quest:last-child{margin-bottom:0}
+  .quest .qicon{width:40px;height:40px;flex:none;border-radius:12px;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:1.25rem;box-shadow:var(--shadow)}
+  .quest .qt{font-size:.88rem;font-weight:700}
+  .quest .qd{font-size:.74rem;color:var(--ink-soft)}
+  .quest .qcheck{margin-left:auto;font-size:1.15rem;flex:none}
+  .quest.done{background:#E9FAF2;border-color:#BFEBD8}
+  .quest.off{opacity:.55;cursor:default}
+  .quest-bonus{text-align:center;font-size:.78rem;color:var(--ink-soft);margin-top:10px}
+  .quest-bonus.won{color:var(--leaf-deep);font-weight:700}
+
+  .world-label{font-size:.78rem;font-weight:700;color:var(--leaf-deep);letter-spacing:.04em;margin:6px 2px 0}
+  .stage{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);cursor:pointer;text-align:left;width:100%;font-family:inherit;color:inherit;transition:transform .12s ease}
+  .stage:active{transform:scale(.97)}
+  .stage .icon{width:46px;height:46px;flex:none;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:#FFE9EC}
+  .stage h3{font-size:.92rem}
+  .stage p{font-size:.75rem;color:var(--ink-soft);margin-top:1px}
+  .stage .stars{margin-left:auto;font-size:.82rem;flex:none}
+  .stage.locked{opacity:.5;cursor:default}
+  .stage.locked .icon{background:#EDF1EF}
+
+  .row{display:flex;gap:10px}
+  .ghost-btn{flex:1;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:11px;font-family:inherit;font-size:.88rem;font-weight:700;color:var(--ink);cursor:pointer;box-shadow:var(--shadow)}
+  .ghost-btn:active{transform:scale(.97)}
+
+  .hidden{display:none!important}
+  .game-top{display:flex;align-items:center;gap:12px}
+  .back{background:var(--card);border:2px solid var(--line);border-radius:12px;width:42px;height:42px;font-size:1.1rem;cursor:pointer;box-shadow:var(--shadow);flex:none}
+  .phase-chip{flex:1;text-align:center;font-size:.8rem;font-weight:700;color:var(--ink-soft);line-height:1.45}
+  .phase-chip b{color:var(--ink)}
+  .dots{display:flex;gap:6px;justify-content:center;margin-top:2px;flex-wrap:wrap}
+  .dot{width:11px;height:11px;border-radius:50%;background:var(--line)}
+  .dot.done{background:var(--leaf)}
+  .dot.now{background:var(--sun);transform:scale(1.25)}
+
+  .prompt{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:20px 16px;text-align:center;box-shadow:var(--shadow)}
+  .prompt .task{font-size:.85rem;color:var(--ink-soft);margin-bottom:12px;line-height:1.6}
+  .hear-btn{
+    background:linear-gradient(180deg,var(--sky),#3E8CD3);color:#fff;border:none;border-radius:999px;
+    padding:13px 24px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;
+    box-shadow:0 5px 0 #2F6EA8;
+  }
+  .hear-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #2F6EA8}
+  .prompt-emoji{font-size:3.4rem;line-height:1.2;margin-bottom:4px}
+  .prompt-th{font-size:1rem;color:var(--ink-soft);margin-bottom:12px}
+
+  .meet-emoji{font-size:4.2rem;line-height:1.2}
+  .meet-word{font-size:1.7rem;font-weight:700;margin-top:4px;line-height:1.3;padding:0 6px}
+  .meet-th{font-size:1.05rem;color:var(--ink-soft);margin:2px 0 16px}
+  .meet-tip{font-size:.76rem;color:var(--ink-soft);margin-top:14px}
+  .next-btn{
+    width:100%;background:linear-gradient(180deg,var(--coral),var(--coral-deep));color:#fff;border:none;border-radius:999px;
+    padding:15px;font-size:1.02rem;font-weight:700;font-family:inherit;cursor:pointer;margin-top:12px;
+    box-shadow:0 5px 0 #B93A50;
+  }
+  .next-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #B93A50}
+
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .choices.three{grid-template-columns:1fr 1fr 1fr}
+  .choice{
+    background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px 8px;
+    font-size:2.3rem;text-align:center;cursor:pointer;box-shadow:var(--shadow);
+    font-family:inherit;min-height:92px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    transition:transform .12s ease;color:var(--ink);
+  }
+  .choices.three .choice{font-size:1.85rem;min-height:84px}
+  .choice:active{transform:scale(.95)}
+  .choice small{font-size:.8rem;color:var(--ink-soft);font-weight:700}
+  .choice.word-choice{font-size:1rem;font-weight:700;min-height:66px;line-height:1.35;padding:12px 8px}
+  .choice.right{border-color:var(--leaf);background:#E9FAF2}
+  .choice.wrong{animation:wobble .45s ease;border-color:#F3C1CB}
+  .choice.hint{border-color:var(--sun);background:#FFF6E4}
+  @keyframes wobble{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+
+  .tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .tile{width:56px;height:56px;border-radius:16px;background:var(--card);border:2px solid var(--line);box-shadow:var(--shadow);font-size:1.45rem;font-weight:700;color:var(--ink);cursor:pointer;transition:transform .12s ease}
+  .tile:active{transform:scale(.92)}
+  .tile.used{opacity:.25;pointer-events:none}
+  .tile.wrong{animation:wobble .45s ease;border-color:#F3C1CB}
+  .tile.hint{border-color:var(--sun);background:#FFF6E4}
+  .slots{display:flex;gap:10px;justify-content:center;margin:14px 0 4px}
+  .slot{width:56px;height:56px;border-radius:16px;border:3px dashed #C6DCD1;display:flex;align-items:center;justify-content:center;font-size:1.55rem;font-weight:700;background:#FAFDFB}
+  .slot.filled{border-style:solid;border-color:var(--leaf);background:#E9FAF2}
+
+  /* memory match */
+  .mem-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .mem-card{
+    aspect-ratio:3/3.4;border-radius:18px;border:2px solid var(--line);background:linear-gradient(180deg,#8FD0F5,#58A6E8);
+    box-shadow:var(--shadow);cursor:pointer;font-family:inherit;font-size:1.9rem;color:#fff;
+    display:flex;align-items:center;justify-content:center;transition:transform .15s ease;
+  }
+  .mem-card:active{transform:scale(.95)}
+  .mem-card.open{background:var(--card);color:var(--ink)}
+  .mem-card.matched{background:#E9FAF2;border-color:var(--leaf);color:var(--ink);pointer-events:none}
+  .mem-card .mw{font-size:1.05rem;font-weight:700}
+
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%);
+    background:var(--ink);color:#fff;border-radius:999px;padding:11px 22px;font-size:.92rem;font-weight:700;
+    opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;white-space:nowrap;z-index:50;max-width:92vw;overflow:hidden;text-overflow:ellipsis;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
+  .toast.good{background:var(--leaf-deep)}
+  .toast.soft{background:#7A6BC9}
+
+  .cheer-card{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:26px 18px;text-align:center;box-shadow:var(--shadow)}
+  .cheer-card .big{font-size:3rem}
+  .cheer-card h2{margin:8px 0 4px}
+  .cheer-card p{color:var(--ink-soft);font-size:.9rem;line-height:1.6}
+  .learned-row{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+  .learned-chip{background:var(--ground);border:2px solid var(--line);border-radius:14px;padding:8px 12px;font-size:.85rem;font-weight:700}
+  .learned-chip span{display:block;font-size:1.4rem}
+  .primary-btn{
+    background:linear-gradient(180deg,var(--coral),var(--coral-deep));color:#fff;border:none;border-radius:999px;
+    padding:14px 30px;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;margin-top:16px;
+    box-shadow:0 5px 0 #B93A50;
+  }
+  .primary-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #B93A50}
+
+  .book-list{display:flex;flex-direction:column;gap:10px}
+  .book-item{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:11px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow)}
+  .book-item .emo{font-size:1.6rem}
+  .book-item .w{font-weight:700;font-size:1rem}
+  .book-item .th{font-size:.76rem;color:var(--ink-soft)}
+  .book-item .stage-tag{margin-left:auto;text-align:center;font-size:.66rem;color:var(--ink-soft);font-weight:700}
+  .book-item .stage-tag span{display:block;font-size:1.15rem}
+  .book-item button{background:#EAF4FD;border:2px solid #CBE3F7;color:#2F6EA8;border-radius:12px;width:40px;height:40px;font-size:1rem;cursor:pointer;flex:none}
+  .empty{color:var(--ink-soft);text-align:center;padding:30px 10px;font-size:.9rem;line-height:1.7}
+
+  .overlay{position:fixed;inset:0;background:rgba(20,35,50,.45);display:flex;align-items:flex-end;justify-content:center;z-index:60}
+  .sheet{background:var(--card);border-radius:24px 24px 0 0;max-width:430px;width:100%;padding:22px 20px 30px;max-height:82dvh;overflow-y:auto}
+  .sheet h2{font-size:1.05rem;margin-bottom:12px}
+  .sheet li{margin:0 0 10px 18px;font-size:.87rem;line-height:1.65;color:var(--ink)}
+  .sheet li b{color:var(--coral-deep)}
+  .sheet .close{width:100%;margin-top:8px}
+  .sheet .fix-step{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;font-size:.87rem;line-height:1.6}
+  .sheet .fix-step .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--sun);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+  .sound-help-link{background:none;border:none;font-family:inherit;font-size:.74rem;color:var(--ink-soft);text-decoration:underline;cursor:pointer;margin-top:10px}
+  .choice.locked, .tile.locked, .hear-btn.locked{pointer-events:none;opacity:.45;filter:grayscale(.2)}
+  .listen-badge{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:700;color:#2F6EA8;background:#EAF4FD;border-radius:999px;padding:5px 12px;margin-top:10px}
+
+  .mini-buddy{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .mini-buddy .mini-face{font-size:1.6rem;display:inline-block;line-height:1}
+  .mini-buddy.cheer .mini-face{animation:bounce .5s ease}
+  .mini-buddy .mini-line{font-size:.8rem;color:var(--ink-soft);font-weight:700}
+  .lesson-more{text-align:center;font-size:.8rem;color:var(--ink-soft);padding:4px 4px 2px;line-height:1.6}
+
+  .sticker-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .sticker-card{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:16px 6px;text-align:center;box-shadow:var(--shadow)}
+  .sticker-card .semo{font-size:2.3rem;display:block}
+  .sticker-card .sname{font-size:.68rem;font-weight:700;color:var(--ink-soft);margin-top:6px;line-height:1.3}
+  .sticker-card.locked{opacity:.4}
+  .sticker-card.locked .semo{filter:grayscale(1)}
+  .sticker-card.new-earned{animation:bounce .6s ease;border-color:var(--sun)}
+
+  .login-card{background:var(--card);border:2px solid var(--line);border-radius:24px;padding:28px 22px;text-align:center;box-shadow:var(--shadow);margin-top:10vh}
+  .login-emoji{font-size:3rem}
+  .login-title{font-size:1.15rem;margin:8px 0 4px}
+  .login-sub{font-size:.85rem;color:var(--ink-soft);line-height:1.6;margin-bottom:18px}
+  .login-label{display:block;text-align:left;font-size:.78rem;font-weight:700;color:var(--ink-soft);margin:12px 2px 6px}
+  .login-input{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:1.05rem;font-family:inherit;background:var(--ground);color:var(--ink)}
+  .login-input:focus{outline:none;border-color:var(--sky)}
+  .login-hint{min-height:1.2em;font-size:.78rem;color:var(--coral-deep);margin-top:8px}
+  .spinner{display:inline-block;width:15px;height:15px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  h1.screen-title{font-size:1.15rem;margin:2px 2px 0}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
+
+<div class="app">
+
+  <!-- ============ LOGIN (ตั้งชื่อ+PIN ครั้งแรก) ============ -->
+  <div id="login" class="hidden">
+    <div class="login-card">
+      <div class="login-emoji">🏝️</div>
+      <h1 class="login-title">ยินดีต้อนรับสู่เกาะคำศัพท์!</h1>
+      <p class="login-sub">บอกชื่อกับตั้งรหัสลับ 4 ตัวไว้หน่อยนะ เผื่อไปเล่นเครื่องอื่นจะได้จำเราได้ ไม่มีใครเห็นรหัสนี้นอกจากหนูกับพี่วิน</p>
+      <label class="login-label">ชื่อเล่นของหนู</label>
+      <input id="login-name" class="login-input" type="text" maxlength="20" placeholder="เช่น น้องพลอย">
+      <label class="login-label">รหัสลับ 4 ตัว (ตัวเลข)</label>
+      <input id="login-pin" class="login-input en" type="tel" inputmode="numeric" maxlength="4" placeholder="••••">
+      <div class="login-hint" id="login-error"></div>
+      <button class="next-btn" id="login-submit-btn" onclick="submitProfile()">เริ่มผจญภัยกันเลย! 🚀</button>
+    </div>
+  </div>
+
+  <!-- ============ HOME ============ -->
+  <div id="home">
+    <div class="top">
+      <div class="logo">🏝️ เกาะคำศัพท์</div>
+      <div class="chips">
+        <span class="chip">⭐ <span id="star-count">0</span></span>
+        <span class="chip">🎴 <span id="sticker-count">0</span>/<span id="sticker-total">0</span></span>
+        <span class="chip">📅 <span id="day-count">0</span></span>
+      </div>
+    </div>
+
+    <div class="buddy" id="buddy" style="margin-top:2px">
+      <div class="face" id="buddy-face">🐱</div>
+      <div class="bubble">
+        <span id="buddy-line"></span>
+        <div class="buddy-meta" id="buddy-meta"></div>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <h2>🗺️ ภารกิจวันนี้ <span class="day-badge hidden" id="day-badge">ทำครบแล้ว! 🎉</span></h2>
+      <div id="quest-list"></div>
+      <div class="quest-bonus" id="quest-bonus"></div>
+    </div>
+
+    <div class="world-label" id="lesson-header">🗺️ แผนที่บทเรียน</div>
+    <div id="lesson-list" style="display:flex;flex-direction:column;gap:12px"></div>
+
+    <div class="row" style="margin-top:4px">
+      <button class="ghost-btn" onclick="openBook()">📖 สมุดคำของฉัน</button>
+      <button class="ghost-btn" onclick="openStickers()">🎴 สติกเกอร์ของฉัน</button>
+    </div>
+    <div style="text-align:center"><button class="sound-help-link" onclick="openNote()">💡 โน้ตถึงพี่วิน</button></div>
+    <div style="text-align:center"><button class="sound-help-link" onclick="openSound()">🔇 เสียงไม่ออก? แตะดูวิธีแก้</button></div>
+    <div style="text-align:center"><button class="sound-help-link" onclick="switchPlayer()">🔁 เปลี่ยนผู้เล่น</button></div>
+  </div>
+
+  <!-- ============ GAME (lesson / review) ============ -->
+  <div id="game" class="hidden">
+    <div class="game-top">
+      <button class="back" onclick="goHome()">←</button>
+      <div class="phase-chip" id="phase-chip"></div>
+      <div style="width:42px"></div>
+    </div>
+    <div class="mini-buddy" id="mini-buddy"><span class="mini-face" id="mini-buddy-face">🐱</span><span class="mini-line" id="mini-buddy-line"></span></div>
+    <div class="dots" id="dots"></div>
+    <div class="prompt" id="prompt-area"></div>
+    <div id="play-area" style="margin-top:2px"></div>
+  </div>
+
+  <!-- ============ MEMORY MATCH ============ -->
+  <div id="match" class="hidden">
+    <div class="game-top">
+      <button class="back" onclick="goHome()">←</button>
+      <div class="phase-chip"><b>เกมเปิดการ์ดคู่</b> — จับคู่รูปกับคำ ฟังเสียงช่วยได้</div>
+      <div style="width:42px"></div>
+    </div>
+    <div class="mini-buddy" id="mini-buddy-match"><span class="mini-face" id="mini-buddy-face-match">🐱</span><span class="mini-line">จำตำแหน่งไว้ให้ดีนะ เป็นกำลังใจให้!</span></div>
+    <div class="mem-grid" id="mem-grid" style="margin-top:6px"></div>
+  </div>
+
+  <!-- ============ CELEBRATE ============ -->
+  <div id="celebrate" class="hidden">
+    <div class="cheer-card">
+      <div class="big" id="cheer-emoji">🎉</div>
+      <h2 id="cheer-title">เก่งมาก!</h2>
+      <p id="cheer-text"></p>
+      <div class="learned-row" id="learned-row"></div>
+      <button class="primary-btn" onclick="goHome()">กลับเกาะ 🏝️</button>
+    </div>
+  </div>
+
+  <!-- ============ WORD BOOK ============ -->
+  <div id="book" class="hidden">
+    <div class="game-top">
+      <button class="back" onclick="goHome()">←</button>
+      <h1 class="screen-title" style="flex:1;text-align:center">📖 สมุดคำของฉัน</h1>
+      <div style="width:42px"></div>
+    </div>
+    <p style="font-size:.8rem;color:var(--ink-soft);text-align:center;line-height:1.7">คำจะโตขึ้นตามความแม่น 🌱 เพิ่งรู้จัก → 🌿 เริ่มจำได้ → 🌳 แม่นแล้ว → ⭐ ขึ้นใจ</p>
+    <div class="book-list" id="book-list"></div>
+  </div>
+
+  <!-- ============ STICKER BOOK ============ -->
+  <div id="stickers" class="hidden">
+    <div class="game-top">
+      <button class="back" onclick="goHome()">←</button>
+      <h1 class="screen-title" style="flex:1;text-align:center">🎴 สติกเกอร์ของฉัน</h1>
+      <div style="width:42px"></div>
+    </div>
+    <p style="font-size:.8rem;color:var(--ink-soft);text-align:center;line-height:1.7">เรียนจบทุกบทในหมวดหนึ่งๆ แล้วจะได้สติกเกอร์ประจำหมวดนั้นทันที!</p>
+    <div class="sticker-grid" id="sticker-grid"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ============ SOUND HELP SHEET ============ -->
+<div class="overlay hidden" id="sound-overlay" onclick="if(event.target===this)closeSound()">
+  <div class="sheet">
+    <h2>🔇 เสียงไม่ออกเหรอ ลองทีละข้อนะ</h2>
+    <div class="fix-step"><div class="n">1</div><div>เพิ่มระดับเสียงเครื่องให้สุดก่อน แล้วแตะปุ่มทดสอบข้างล่างเลย</div></div>
+    <div class="fix-step"><div class="n">2</div><div><b>iPhone/iPad:</b> เลื่อนสวิตช์เล็กๆ ข้างเครื่อง (เหนือปุ่มเพิ่มเสียง) ให้ <b>ไม่เห็นสีส้ม</b> — โหมดเงียบจะตัดเสียงเกมทั้งหมด</div></div>
+    <div class="fix-step"><div class="n">3</div><div>ถ้ายังเงียบอยู่ ลองเปิดลิงก์นี้ใน <b>Chrome หรือ Safari</b> โดยตรง</div></div>
+    <button class="hear-btn" style="width:100%;margin-top:6px" onclick="playWord('hello')">🔊 แตะทดสอบเสียง — ต้องได้ยิน "hello"</button>
+    <button class="ghost-btn close" onclick="closeSound()">ปิด</button>
+  </div>
+</div>
+
+<!-- ============ NOTE SHEET ============ -->
+<div class="overlay hidden" id="note-overlay" onclick="if(event.target===this)closeNote()">
+  <div class="sheet">
+    <h2>💡 ถึงพี่วิน — สรุปทั้งเกมตอนนี้</h2>
+    <ul>
+      <li><b>📚 เนื้อหา:</b> 25 บทเรียน 11 หมวด (สัตว์, ทักทาย, ตัวเลข, อาหาร, โรงเรียน, ขอความช่วยเหลือในห้องเรียน, ประโยคแรกของฉัน, ร่างกาย, บ้าน+สี+ครอบครัว, ท้องฟ้า, การกระทำ) ปลดล็อกทีละบทตามลำดับ</li>
+      <li><b>🔊 เสียง 2 ภาษา:</b> ทุกคำมีเสียงอังกฤษจริงฝังในเกม และตอน "รู้จักเพื่อนใหม่" (สอนคำครั้งแรก) จะมีเสียงไทยอธิบายต่อท้ายอัตโนมัติ ("แปลว่า...") เหมือนมีครูไทยสอน — ตอนฝึก/ทวนคำจะเป็นอังกฤษล้วนเพื่อฝึกฟังจริง</li>
+      <li><b>🧠 ทวนเว้นระยะ (Spaced Repetition):</b> ทุกคำมีระดับความแม่น 🌱→🌿→🌳→⭐ นัดทวนตอนสมองใกล้ลืมพอดี (1→2→4→7 วัน) บันไดโจทย์เลื่อนขั้นตามความแม่น: ฟัง→ชี้รูป → ดูรูป→เลือกคำ → สะกดเอง</li>
+      <li><b>🗺️ ภารกิจวันนี้ 3 อย่าง:</b> ทวนคำ + เรียนใหม่ + เกมการ์ดคู่ ครบแล้วได้ดาวโบนัส "จบมื้อ" ~10 นาที ปฏิทินสะสมไม่ลงโทษ (ขาดวันไม่รีเซ็ต)</li>
+      <li><b>🎴 สติกเกอร์สะสม:</b> เรียนจบทุกบทในหมวดหนึ่งครบ ปลดล็อกสติกเกอร์ประจำหมวดทันที (11 แบบ) เก็บดูได้ในสมุดสติกเกอร์</li>
+      <li><b>🐱 ส้มโอวิวัฒนาการ:</b> โตตามจำนวนคำที่ "แม่นแล้ว" 🐱→😺→😼→🐯 ตัวจิ๋วตามไปทุกหน้าจอเกม ไม่ใช่แค่หน้า Home</li>
+      <li><b>🔐 ระบบชื่อ+PIN:</b> ตั้งครั้งแรกแล้วเปลี่ยนเครื่องเล่นได้ ระบบดึงความคืบหน้ากลับมาให้อัตโนมัติ (เช็คกับหลังบ้านตอนล็อกอิน)</li>
+      <li><b>📊 หลังบ้าน (Google ชีต):</b> แยก 2 แท็บ — "ล่าสุด" (1 แถวต่อคน อัปเดตทับ อ่านง่าย มีคอลัมน์ "ความคืบหน้า" สรุปเป็นข้อความ) กับ "ประวัติ" (เพิ่มแถวแค่วันที่เล่นสำเร็จจริง ไม่ท่วมชีต) — <a href="https://docs.google.com/spreadsheets/d/1Z6bAgG5JQIXsQlZLp4ZnPjAs0lVjibD8n84bNu1FMVw/edit" target="_blank" rel="noopener" style="color:var(--coral-deep);font-weight:700">เปิดดูหลังบ้าน →</a> (ต้องล็อกอินด้วย w.tanawin@gmail.com)</li>
+      <li>หลักการเดิมคงไว้ครบ: สอนก่อนถาม, ไม่มีหัวใจ/หักคะแนน, ผิด 2 ครั้งใบ้ให้, ปุ่มคำตอบล็อกระหว่างฟังกันกดมั่ว, ไม่มี leaderboard/การเปรียบเทียบกับใคร, ภาษาพี่คุยกับน้อง</li>
+    </ul>
+    <p style="font-size:.72rem;color:var(--ink-soft);margin-top:10px">*หมายเหตุถึงตัวเอง: อัปเดตโน้ตนี้ทุกครั้งที่เพิ่มฟีเจอร์ใหญ่ — เคยลืมจนโน้ต stale มาแล้วรอบนึง</p>
+    <button class="ghost-btn close" onclick="closeNote()">ปิด</button>
+  </div>
+</div>
+
+<script>
+/* ================= embedded audio ================= */
+const AUDIO = __AUDIO_JSON__;
+const AUDIO_TH = __AUDIO_TH_JSON__; /* เสียงไทย "แปลว่า..." เหมือนครูไทยอธิบาย ใช้แค่ตอนสอนคำใหม่ (meet phase) */
+
+/* ================= data ================= */
+const W = (w,th,e)=>({w,th,e});
+const P = (w,th,e)=>({w,th,e,isPhrase:true}); /* วลี/ประโยค — ไม่ต้องสะกดทีละตัวอักษร (ดู REVIEW_TASK) */
+const UNITS = [
+  {name:'🐾 สัตว์โลกน่ารัก', lessons:[
+    {title:'บทที่ 1 · เพื่อนสี่ขา (และครีบ)', icon:'🐱', words:[W('cat','แมว','🐱'),W('dog','หมา','🐶'),W('fish','ปลา','🐟')]},
+    {title:'บทที่ 2 · ที่ฟาร์ม', icon:'🚜', words:[W('bird','นก','🐦'),W('pig','หมู','🐷'),W('cow','วัว','🐮')]},
+  ]},
+  {name:'👋 ทักทายกันเถอะ', lessons:[
+    {title:'บทที่ 3 · เจอกันครั้งแรก', icon:'👋', words:[P('Hello!','สวัสดีค่ะ!','👋'),P('Hi!','หวัดดีค่ะ!','🙋'),P('Nice to meet you!','ยินดีที่ได้รู้จักค่ะ!','🤝')]},
+    {title:'บทที่ 4 · คุยกันหน่อย', icon:'😊', words:[P('How are you?','สบายดีไหมคะ?','😊'),P("I'm fine, thank you.",'หนูสบายดีค่ะ ขอบคุณค่ะ','👍'),P('Goodbye!','บ๊ายบายค่ะ!','🚶')]},
+  ]},
+  {name:'🔢 นับเลขกันเถอะ', lessons:[
+    {title:'บทที่ 5 · นับ 1-3', icon:'🔢', words:[W('one','หนึ่ง','1️⃣'),W('two','สอง','2️⃣'),W('three','สาม','3️⃣')]},
+    {title:'บทที่ 6 · นับ 4-6', icon:'🔢', words:[W('four','สี่','4️⃣'),W('five','ห้า','5️⃣'),W('six','หก','6️⃣')]},
+    {title:'บทที่ 7 · นับ 7-10', icon:'🔟', words:[W('seven','เจ็ด','7️⃣'),W('eight','แปด','8️⃣'),W('nine','เก้า','9️⃣'),W('ten','สิบ','🔟')]},
+  ]},
+  {name:'🍳 อร่อยจัง', lessons:[
+    {title:'บทที่ 8 · มื้อเช้า', icon:'🥚', words:[W('egg','ไข่','🥚'),W('milk','นม','🥛'),W('rice','ข้าว','🍚')]},
+    {title:'บทที่ 9 · ของโปรด', icon:'🍎', words:[W('water','น้ำ','💧'),W('bread','ขนมปัง','🍞'),W('apple','แอปเปิล','🍎')]},
+  ]},
+  {name:'🎒 ไปโรงเรียน', lessons:[
+    {title:'บทที่ 10 · ในกระเป๋า', icon:'🎒', words:[W('book','หนังสือ','📖'),W('pen','ปากกา','🖊️'),W('bag','กระเป๋า','🎒')]},
+    {title:'บทที่ 11 · ในห้องเรียน', icon:'✏️', words:[W('chair','เก้าอี้','🪑'),W('ruler','ไม้บรรทัด','📏'),W('pencil','ดินสอ','✏️')]},
+  ]},
+  {name:'🙋 ขอความช่วยเหลือในห้องเรียน', lessons:[
+    {title:'บทที่ 12 · กล้าพูดกล้าถาม', icon:'🙋', words:[P('May I go to the toilet?','ขอไปห้องน้ำได้ไหมคะ','🚻'),P("I don't understand.",'หนูไม่เข้าใจค่ะ','🤷'),P('Can you repeat, please?','พูดอีกครั้งได้ไหมคะ','🔁')]},
+    {title:'บทที่ 13 · ขอสิ่งที่ต้องการ', icon:'🙏', words:[P('Can I have a pencil?','ขอดินสอได้ไหมคะ','✏️'),P('Excuse me.','ขอโทษค่ะ','🙏'),P("I don't know.",'หนูไม่รู้ค่ะ','🤔')]},
+  ]},
+  {name:'💬 ประโยคแรกของฉัน', lessons:[
+    {title:'บทที่ 14 · นี่คือ...', icon:'💬', words:[P('This is a cat.','นี่คือแมวค่ะ','🐱'),P('This is a dog.','นี่คือหมาค่ะ','🐶'),P('I have a fish.','หนูมีปลาค่ะ','🐟')]},
+    {title:'บทที่ 15 · ฉันชอบ...', icon:'💬', words:[P('I like milk.','หนูชอบนมค่ะ','🥛'),P('I see a bird.','หนูเห็นนกค่ะ','🐦'),P('I have a pencil.','หนูมีดินสอค่ะ','✏️')]},
+  ]},
+  {name:'🙂 ร่างกายของฉัน', lessons:[
+    {title:'บทที่ 16 · บนใบหน้า', icon:'👀', words:[W('eye','ตา','👁️'),W('ear','หู','👂'),W('nose','จมูก','👃')]},
+    {title:'บทที่ 17 · ขยับได้', icon:'👋', words:[W('hand','มือ','✋'),W('foot','เท้า','🦶'),W('mouth','ปาก','👄')]},
+  ]},
+  {name:'🏠 บ้านและสีสัน', lessons:[
+    {title:'บทที่ 18 · ครอบครัวของเรา', icon:'👨‍👩‍👧', words:[W('mother','แม่','👩'),W('father','พ่อ','👨'),W('baby','เด็กน้อย','👶')]},
+    {title:'บทที่ 19 · ครอบครัวขยาย', icon:'👴', words:[W('sister','พี่สาว/น้องสาว','👧'),W('brother','พี่ชาย/น้องชาย','👦'),W('grandmother','ยาย/ย่า','👵'),W('grandfather','ตา/ปู่','👴')]},
+    {title:'บทที่ 20 · สีสันสดใส', icon:'🎨', words:[W('red','สีแดง','🔴'),W('blue','สีน้ำเงิน','🔵'),W('green','สีเขียว','🟢')]},
+    {title:'บทที่ 21 · สีเพิ่มเติม', icon:'🎨', words:[W('yellow','สีเหลือง','🟡'),W('black','สีดำ','⚫'),W('white','สีขาว','⚪')]},
+    {title:'บทที่ 22 · สีสุดท้าย', icon:'🎨', words:[W('purple','สีม่วง','🟣'),W('orange','สีส้ม','🟠'),W('pink','สีชมพู','💗')]},
+  ]},
+  {name:'🌌 ท้องฟ้าและสวน', lessons:[
+    {title:'บทที่ 23 · มองขึ้นฟ้า', icon:'🌙', words:[W('sun','พระอาทิตย์','☀️'),W('moon','พระจันทร์','🌙'),W('star','ดวงดาว','⭐')]},
+    {title:'บทที่ 24 · ในสวน', icon:'🌷', words:[W('rain','ฝน','🌧️'),W('tree','ต้นไม้','🌳'),W('flower','ดอกไม้','🌸')]},
+  ]},
+  {name:'🏃 ขยับตัวกัน', lessons:[
+    {title:'บทที่ 25 · แอคชั่น!', icon:'💪', words:[W('run','วิ่ง','🏃'),W('sleep','นอน','😴'),W('swim','ว่ายน้ำ','🏊')]},
+  ]},
+  {name:'📅 วันในสัปดาห์', lessons:[
+    {title:'บทที่ 26 · ต้นสัปดาห์', icon:'📅', words:[W('Monday','วันจันทร์','①'),W('Tuesday','วันอังคาร','②'),W('Wednesday','วันพุธ','③'),W('Thursday','วันพฤหัสบดี','④')]},
+    {title:'บทที่ 27 · ปลายสัปดาห์', icon:'🎉', words:[W('Friday','วันศุกร์','⑤'),W('Saturday','วันเสาร์','⑥'),W('Sunday','วันอาทิตย์','⑦')]},
+  ]},
+  {name:'🕐 กิจวัตรประจำวัน', lessons:[
+    {title:'บทที่ 28 · เริ่มต้นวัน', icon:'⏰', words:[W('wake up','ตื่นนอน','⏰'),W('morning','ตอนเช้า','🌅'),W('night','ตอนกลางคืน','🌃')]},
+    {title:'บทที่ 29 · มื้ออาหาร', icon:'🍱', words:[W('breakfast','อาหารเช้า','🍳'),W('lunch','อาหารกลางวัน','🍱'),W('dinner','อาหารเย็น','🍲')]},
+    {title:'บทที่ 30 · ก่อนนอน', icon:'🛌', words:[W('homework','การบ้าน','📝'),W('bath','อาบน้ำ','🛁'),W('bedtime','เข้านอน','🛌')]},
+  ]},
+  {name:'☁️ อากาศ', lessons:[
+    {title:'บทที่ 31 · แดดและฝน', icon:'🌤️', words:[W('sunny','แดดออก','🌤️'),W('rainy','ฝนตก','☔'),W('cloudy','มีเมฆ','☁️')]},
+    {title:'บทที่ 32 · ร้อนและหนาว', icon:'🥵', words:[W('windy','ลมแรง','🌬️'),W('hot','ร้อน','🥵'),W('cold','หนาว','🥶')]},
+    {title:'บทที่ 33 · อากาศพิเศษ', icon:'❄️', words:[W('snow','หิมะ','❄️'),W('rainbow','รุ้ง','🌈'),W('storm','พายุ','🌪️')]},
+  ]},
+  {name:'😀 ความรู้สึก', lessons:[
+    {title:'บทที่ 34 · สุขและเศร้า', icon:'😀', words:[W('happy','มีความสุข','😀'),W('sad','เศร้า','😢'),W('angry','โกรธ','😠')]},
+    {title:'บทที่ 35 · กลัวและตื่นเต้น', icon:'🤩', words:[W('tired','เหนื่อย','😪'),W('scared','กลัว','😨'),W('excited','ตื่นเต้น','🤩')]},
+    {title:'บทที่ 36 · หิวและไม่สบาย', icon:'🤒', words:[W('hungry','หิว','🤤'),W('thirsty','หิวน้ำ','🥤'),W('sick','ไม่สบาย','🤒')]},
+  ]},
+  {name:'📚 วิชาเรียน', lessons:[
+    {title:'บทที่ 37 · วิชาโปรด', icon:'🔢', words:[W('math','คณิตศาสตร์','🔢'),W('science','วิทยาศาสตร์','🔬'),W('art','ศิลปะ','🎨')]},
+    {title:'บทที่ 38 · วิชาสนุก', icon:'🎵', words:[W('English','ภาษาอังกฤษ','🔤'),W('P.E.','พลศึกษา','⚽'),W('music','ดนตรี','🎵')]},
+  ]},
+  {name:'🏫 คนและที่ในโรงเรียน', lessons:[
+    {title:'บทที่ 39 · คนสำคัญ', icon:'🧑‍🏫', words:[W('teacher','ครู','🧑‍🏫'),W('student','นักเรียน','🧑‍🎓'),W('friend','เพื่อน','👬')]},
+    {title:'บทที่ 40 · ที่โรงเรียน', icon:'🍽️', words:[W('principal','ผู้อำนวยการ','🧑‍💼'),W('nurse','พยาบาล','🧑‍⚕️'),W('canteen','โรงอาหาร','🍽️')]},
+  ]},
+  {name:'🍉 อาหารเพิ่มเติม', lessons:[
+    {title:'บทที่ 41 · ผลไม้', icon:'🍉', words:[W('banana','กล้วย','🍌'),W('mango','มะม่วง','🥭'),W('watermelon','แตงโม','🍉')]},
+    {title:'บทที่ 42 · กับข้าว', icon:'🍜', words:[W('chicken','ไก่','🍗'),W('noodles','ก๋วยเตี๋ยว','🍜'),W('vegetable','ผัก','🥦')]},
+    {title:'บทที่ 43 · ของโปรดเพิ่มเติม', icon:'🍇', words:[W('grape','องุ่น','🍇'),W('shrimp','กุ้ง','🍤'),W('soup','ซุป','🥣')]},
+  ]},
+  {name:'🚗 การเดินทาง', lessons:[
+    {title:'บทที่ 44 · พาหนะในเมือง', icon:'🚗', words:[W('car','รถยนต์','🚗'),W('bus','รถบัส','🚌'),W('bike','จักรยาน','🚲')]},
+    {title:'บทที่ 45 · พาหนะไกลๆ', icon:'✈️', words:[W('train','รถไฟ','🚆'),W('boat','เรือ','⛵'),W('airplane','เครื่องบิน','✈️')]},
+    {title:'บทที่ 46 · พาหนะอื่นๆ', icon:'🏍️', words:[W('taxi','แท็กซี่','🚕'),W('motorcycle','มอเตอร์ไซค์','🏍️'),W('walk','เดิน','🥾')]},
+  ]},
+  {name:'🏙️ สถานที่ในเมือง', lessons:[
+    {title:'บทที่ 47 · สถานที่จำเป็น', icon:'🏥', words:[W('hospital','โรงพยาบาล','🏥'),W('park','สวนสาธารณะ','🏞️'),W('market','ตลาด','🏪')]},
+    {title:'บทที่ 48 · สถานที่ใกล้บ้าน', icon:'🏦', words:[W('restaurant','ร้านอาหาร','🏮'),W('bank','ธนาคาร','🏦'),W('post office','ไปรษณีย์','📮')]},
+  ]},
+  {name:'🔺 รูปทรง', lessons:[
+    {title:'บทที่ 49 · รูปทรงพื้นฐาน', icon:'⭕', words:[W('circle','วงกลม','⭕'),W('square','สี่เหลี่ยมจัตุรัส','🟥'),W('triangle','สามเหลี่ยม','🔺')]},
+    {title:'บทที่ 50 · รูปทรงน่ารัก', icon:'🧊', words:[W('heart','รูปหัวใจ','❤️'),W('diamond','ข้าวหลามตัด','🔶'),W('cube','ลูกบาศก์','🧊')]},
+  ]},
+  {name:'⚖️ คำตรงข้าม', lessons:[
+    {title:'บทที่ 51 · ใหญ่เล็กเร็ว', icon:'🐘', words:[W('big','ใหญ่','🐘'),W('small','เล็ก','🐭'),W('fast','เร็ว','🐇')]},
+    {title:'บทที่ 52 · ช้าหนักเบา', icon:'🐢', words:[W('slow','ช้า','🐢'),W('heavy','หนัก','🏋️'),W('light','เบา','🪶')]},
+  ]},
+  {name:'❓ ถามได้ไม่อาย', lessons:[
+    {title:'บทที่ 53 · ถามของ', icon:'❓', words:[P('What is this?','นี่คืออะไรคะ','❓'),P('Where is it?','มันอยู่ที่ไหนคะ','📍'),P('How old are you?','คุณอายุเท่าไหร่คะ','🎊')]},
+    {title:'บทที่ 54 · ถามคน', icon:'📛', words:[P("What's your name?",'คุณชื่ออะไรคะ','📛'),P('Can I help you?','ให้ช่วยอะไรไหมคะ','💁'),P('What time is it?','กี่โมงแล้วคะ','⏱️')]},
+  ]},
+  {name:'🙏 คำสุภาพ', lessons:[
+    {title:'บทที่ 55 · ขอและขอบคุณ', icon:'🥺', words:[P('Please.','กรุณา','🥺'),P('Thank you!','ขอบคุณค่ะ!','🙌'),P('Sorry!','ขอโทษค่ะ!','😔')]},
+    {title:'บทที่ 56 · ให้กำลังใจ', icon:'👏', words:[P("You're welcome.",'ไม่เป็นไรค่ะ','😌'),P('Good job!','เก่งมากนะ!','👏'),P('Well done!','ทำได้ดีมากนะ!','💯')]},
+  ]},
+  {name:'🎂 วันเกิด', lessons:[
+    {title:'บทที่ 57 · งานวันเกิด', icon:'🎂', words:[W('birthday','วันเกิด','🎂'),W('cake','เค้ก','🧁'),W('candle','เทียน','🕯️')]},
+    {title:'บทที่ 58 · ปาร์ตี้สนุก', icon:'🎈', words:[W('gift','ของขวัญ','🎁'),W('balloon','ลูกโป่ง','🎈'),W('party','งานปาร์ตี้','🎉')]},
+  ]},
+  {name:'💬 ประโยคเพิ่มเติม', lessons:[
+    {title:'บทที่ 59 · เล่าเรื่องตัวเอง', icon:'💧', words:[P('I want water.','หนูอยากดื่มน้ำค่ะ','💧'),P('I am happy.','หนูมีความสุขค่ะ','😀'),P('I can swim.','หนูว่ายน้ำได้ค่ะ','🏊')]},
+    {title:'บทที่ 60 · เล่าเรื่องรอบตัว', icon:'👨‍👩‍👧', words:[P('This is my bag.','นี่คือกระเป๋าของหนูค่ะ','🎒'),P('I go to school.','หนูไปโรงเรียนค่ะ','🏫'),P('I love my family.','หนูรักครอบครัวของหนูค่ะ','👨‍👩‍👧')]},
+  ]},
+  {name:'📢 คำสั่งในห้องเรียน', lessons:[
+    {title:'บทที่ 61 · ฟังครูสั่ง', icon:'🧍', words:[P('Stand up!','ยืนขึ้น!','🧍'),P('Sit down!','นั่งลง!','🛋️'),P('Be quiet, please.','เงียบก่อนนะ','🤫')]},
+    {title:'บทที่ 62 · ทำตามครู', icon:'👀', words:[P('Listen!','ฟังนะ!','🎧'),P('Look!','ดูนี่!','👀'),P('Repeat after me.','พูดตามครู','🗣️')]},
+    {title:'บทที่ 63 · กับหนังสือ', icon:'📗', words:[P('Open your book.','เปิดหนังสือ','📗'),P('Close your book.','ปิดหนังสือ','📕'),P('Raise your hand.','ยกมือขึ้น','🙋‍♀️')]},
+  ]},
+  {name:'💰 ซื้อของกัน', lessons:[
+    {title:'บทที่ 64 · เงินและการซื้อ', icon:'💰', words:[W('money','เงิน','💰'),W('baht','บาท','💵'),W('buy','ซื้อ','🛍️')]},
+    {title:'บทที่ 65 · ถามราคา', icon:'💵', words:[P('How much is it?','ราคาเท่าไหร่คะ','💸'),W('cheap','ราคาถูก','💲'),W('expensive','ราคาแพง','💎')]},
+  ]},
+  {name:'👮 อาชีพต่างๆ', lessons:[
+    {title:'บทที่ 66 · อาชีพช่วยเหลือ', icon:'👮', words:[W('doctor','หมอ','👨‍⚕️'),W('police officer','ตำรวจ','👮'),W('farmer','ชาวนา','🧑‍🌾')]},
+    {title:'บทที่ 67 · อาชีพรอบตัว', icon:'🍳', words:[W('driver','คนขับรถ','🧑‍✈️'),W('cook','พ่อครัวแม่ครัว','👨‍🍳')]},
+  ]},
+  {name:'↔️ บอกทิศทาง', lessons:[
+    {title:'บทที่ 68 · เลี้ยวไปทางไหน', icon:'↔️', words:[W('turn left','เลี้ยวซ้าย','⬅️'),W('turn right','เลี้ยวขวา','➡️'),W('go straight','ตรงไป','⬆️')]},
+    {title:'บทที่ 69 · ใกล้หรือไกล', icon:'📏', words:[W('near','ใกล้','🤏'),W('far','ไกล','🏔️')]},
+  ]},
+  {name:'🕐 บอกเวลากัน', lessons:[
+    {title:'บทที่ 70 · นาฬิกาเช้า', icon:'🕐', words:[P("It's one o'clock.",'ตอนนี้หนึ่งนาฬิกาค่ะ','🕐'),P("It's two o'clock.",'ตอนนี้สองนาฬิกาค่ะ','🕑'),P("It's three o'clock.",'ตอนนี้สามนาฬิกาค่ะ','🕒')]},
+    {title:'บทที่ 71 · นาฬิกาบ่าย', icon:'🕕', words:[P("It's six o'clock.",'ตอนนี้หกนาฬิกาค่ะ','🕕'),P("It's nine o'clock.",'ตอนนี้เก้านาฬิกาค่ะ','🕘'),P("It's twelve o'clock.",'ตอนนี้สิบสองนาฬิกาค่ะ','🕛')]},
+  ]},
+  {name:'🌦️ ฤดูกาลของไทย', lessons:[
+    {title:'บทที่ 72 · สามฤดู', icon:'🌦️', words:[W('summer','ฤดูร้อน','🥵'),W('rainy season','ฤดูฝน','🌧️'),W('winter','ฤดูหนาว','🥶')]},
+  ]},
+];
+const LESSONS = UNITS.flatMap(u=>u.lessons);
+const ALL_WORDS = LESSONS.flatMap(l=>l.words);
+const META = {}; ALL_WORDS.forEach(x=>META[x.w]=x);
+
+/* สติกเกอร์ประจำหมวด — ปลดล็อกเมื่อเรียนจบทุกบทในหมวดนั้น (เก็บสะสม ไม่มีวันหาย) */
+const UNIT_STICKERS = [
+  {emoji:'🐾', name:'นักสำรวจสัตว์'},
+  {emoji:'👋', name:'นักทักทาย'},
+  {emoji:'🔢', name:'เซียนตัวเลข'},
+  {emoji:'🍳', name:'นักชิม'},
+  {emoji:'🎒', name:'นักเรียนตัวจริง'},
+  {emoji:'🙋', name:'กล้าถามกล้าพูด'},
+  {emoji:'💬', name:'นักแต่งประโยค'},
+  {emoji:'🙂', name:'รู้จักตัวเอง'},
+  {emoji:'🏠', name:'คนในบ้าน'},
+  {emoji:'🌌', name:'นักสำรวจฟ้า'},
+  {emoji:'🏃', name:'นักแอคชั่น'},
+  {emoji:'📅', name:'นักวางแผน'},
+  {emoji:'🕐', name:'นักจัดตาราง'},
+  {emoji:'☁️', name:'นักพยากรณ์'},
+  {emoji:'😀', name:'นักรู้ใจตัวเอง'},
+  {emoji:'📚', name:'เซียนวิชาการ'},
+  {emoji:'🏫', name:'เพื่อนซี้โรงเรียน'},
+  {emoji:'🍉', name:'นักชิมตัวยง'},
+  {emoji:'🚗', name:'นักเดินทาง'},
+  {emoji:'🏙️', name:'นักสำรวจเมือง'},
+  {emoji:'🔺', name:'นักออกแบบ'},
+  {emoji:'⚖️', name:'นักเปรียบเทียบ'},
+  {emoji:'❓', name:'นักตั้งคำถาม'},
+  {emoji:'🙏', name:'เด็กมารยาทดี'},
+  {emoji:'🎂', name:'เจ้าของวันเกิด'},
+  {emoji:'💬', name:'นักแต่งประโยคขั้นเทพ'},
+  {emoji:'📢', name:'คุณครูตัวน้อย'},
+  {emoji:'💰', name:'นักช้อปตัวจริง'},
+  {emoji:'👮', name:'นักสำรวจอาชีพ'},
+  {emoji:'↔️', name:'นักนำทาง'},
+  {emoji:'🕐', name:'นักบอกเวลา'},
+  {emoji:'🌦️', name:'นักสังเกตฤดู'},
+];
+const UNIT_RANGES = (()=>{ const r=[]; let gi=0; UNITS.forEach(u=>{ r.push([gi, gi+u.lessons.length-1]); gi+=u.lessons.length; }); return r; })();
+function checkUnitSticker(lessonIdx){
+  const unitIdx = UNIT_RANGES.findIndex(([s,e])=>lessonIdx>=s && lessonIdx<=e);
+  if(unitIdx<0) return null;
+  const [s,e] = UNIT_RANGES[unitIdx];
+  for(let i=s;i<=e;i++){ if(!(S.lessonStars[i]>0)) return null; }
+  if(!S.stickers) S.stickers = [];
+  if(S.stickers.includes(unitIdx)) return null;
+  S.stickers.push(unitIdx);
+  return UNIT_STICKERS[unitIdx];
+}
+function openStickers(){
+  const grid = $('sticker-grid');
+  grid.innerHTML = UNIT_STICKERS.map((s,i)=>{
+    const earned = (S.stickers||[]).includes(i);
+    return `<div class="sticker-card ${earned?'':'locked'}">
+      <span class="semo">${earned?s.emoji:'❓'}</span>
+      <div class="sname">${earned?s.name:'ยังไม่ปลดล็อก'}</div>
+    </div>`;
+  }).join('');
+  show('stickers');
+}
+
+const PRAISE = ['เก่งมาก! 🎉','ใช่เลย! 👏','แม่นสุดๆ 💯','โหห เก่งจัง ✨','สุดยอดเลย 🌟','เจ๋งไปเลย! 🔥','ปังมาก! 💥','เก่งขึ้นทุกวันเลยนะ 📈','ใช่ต้องงี้! 🙌'];
+const GENTLE = ['เกือบแล้ว ลองอีกทีนะ','ไม่เป็นไรเลย ฟังอีกรอบก็ได้ 🔊','ใจเย็นๆ ค่อยๆ ดูนะ','ผิดได้ ไม่มีใครหักคะแนนอยู่แล้ว 😊','อีกนิดเดียวเอง ลองใหม่นะ'];
+const STAGE_ICON = ['🌱','🌱','🌿','🌳','⭐'];
+const STAGE_NAME = ['เพิ่งรู้จัก','เพิ่งรู้จัก','เริ่มจำได้','แม่นแล้ว','ขึ้นใจ'];
+const INTERVALS = {1:1, 2:2, 3:4, 4:7};
+
+/* ================= state ================= */
+function today(){ return Math.floor((Date.now() - new Date().getTimezoneOffset()*60000)/86400000); }
+let S = load();
+function load(){
+  try{
+    const s = JSON.parse(localStorage.getItem('kks-p1'));
+    if(s && s.prog){ if(!s.stickers) s.stickers = []; return s; }
+  }catch(e){}
+  return {stars:0, lessonStars:{}, prog:{}, quest:{day:-1,review:false,learn:false,game:false,bonus:false}, daysDone:0, visits:0, stickers:[]};
+}
+function save(){ try{ localStorage.setItem('kks-p1', JSON.stringify(S)); }catch(e){} pushProgress(); }
+
+/* ================= profile (ชื่อ + PIN) — ให้เล่นเครื่องอื่นแล้วดึงข้อมูลกลับมาได้, และเป็น id ส่งให้หลังบ้าน ================= */
+function loadProfile(){
+  try{ return JSON.parse(localStorage.getItem('kks-profile')); }catch(e){ return null; }
+}
+function saveProfile(p){ try{ localStorage.setItem('kks-profile', JSON.stringify(p)); }catch(e){} }
+let PROFILE = loadProfile();
+async function submitProfile(){
+  const name = $('login-name').value.trim();
+  const pin = $('login-pin').value.trim();
+  const err = $('login-error');
+  const btn = $('login-submit-btn');
+  if(!name){ err.textContent = 'ใส่ชื่อเล่นก่อนนะ'; return; }
+  if(!/^\d{4}$/.test(pin)){ err.textContent = 'รหัสลับต้องเป็นตัวเลข 4 ตัวนะ'; return; }
+  err.textContent = '';
+  PROFILE = {name, pin};
+  saveProfile(PROFILE);
+
+  if(btn){ btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังเช็คว่าเคยเล่นเครื่องอื่นมั้ย...'; }
+  const restored = await fetchRestoredState(name, pin);
+  /* ดึงของจากหลังบ้านมาใช้เฉพาะเมื่อ "ก้าวหน้ากว่า" ที่มีในเครื่องนี้ (กันเล่น offline ในเครื่องนี้แล้วโดนของเก่าทับ)
+     ถ้าเครื่องนี้ล่าสุดกว่า เก็บของเครื่องไว้ แล้ว save() จะดันขึ้นหลังบ้านเองทับให้เป็นเวอร์ชันล่าสุด */
+  if(restored && (restored.daysDone||0) >= (S.daysDone||0)) S = restored;
+  save();
+  if(btn){ btn.disabled = false; btn.textContent = 'เริ่มผจญภัยกันเลย! 🚀'; }
+
+  renderHome();
+  show('home');
+}
+async function fetchRestoredState(name, pin){
+  if(!BACKEND_URL) return null;
+  try{
+    const url = BACKEND_URL + '?action=restore&name=' + encodeURIComponent(name) + '&pin=' + encodeURIComponent(pin);
+    const res = await fetch(url);
+    const data = await res.json();
+    if(data && data.found && data.fullState){
+      const parsed = JSON.parse(data.fullState);
+      if(parsed && parsed.prog){ if(!parsed.stickers) parsed.stickers = []; return parsed; }
+    }
+  }catch(e){ /* เน็ตหลุดหรือหลังบ้านยังไม่พร้อม ก็เริ่มใหม่ในเครื่องนี้ไปก่อน */ }
+  return null;
+}
+function switchPlayer(){
+  localStorage.removeItem('kks-profile');
+  localStorage.removeItem('kks-p1');
+  PROFILE = null;
+  S = load();
+  show('login');
+}
+
+/* ================= backend sync (เติม URL ตอน Apps Script deploy เสร็จ — ไม่ต้องแก้ที่อื่นอีก) ================= */
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbzSKRJM6jc6MQdgp34a4_4AdU_7roEct0lldA3GimRsFERB3yHzKTH6N6qUuk1mkGd1rA/exec';
+function pushProgress(){
+  if(!BACKEND_URL || !PROFILE) return;
+  try{
+    fetch(BACKEND_URL, {
+      method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({
+        name:PROFILE.name, pin:PROFILE.pin, stars:S.stars, daysDone:S.daysDone,
+        wordsLearned:Object.keys(S.prog).length, mastered:masteredCount(), ts:Date.now(),
+        summary: progressSummary(),
+        fullState: JSON.stringify(S)
+      })
+    }).catch(()=>{});
+  }catch(e){}
+}
+/* สรุปความคืบหน้าแบบมนุษย์อ่านง่าย ให้พี่วินเห็นในชีตหลังบ้านโดยไม่ต้องแกะ JSON */
+function progressSummary(){
+  const nli = nextLessonIdx();
+  const lessonPos = nli===-1 ? `จบทุกบทแล้ว! (${LESSONS.length}/${LESSONS.length})` : `กำลังเรียนบทที่ ${nli+1}/${LESSONS.length}`;
+  return `${lessonPos} · คำที่แม่นแล้ว ${masteredCount()} คำ · สติกเกอร์ ${(S.stickers||[]).length}/${UNIT_STICKERS.length} · เล่นมาแล้ว ${S.daysDone} วัน`;
+}
+function learnedList(){ return Object.keys(S.prog).map(w=>META[w]).filter(Boolean); }
+function masteredCount(){ return Object.values(S.prog).filter(p=>p.box>=3).length; }
+function dueList(){ const t=today(); return Object.entries(S.prog).filter(([w,p])=>p.due<=t).map(([w])=>META[w]); }
+function nextLessonIdx(){ for(let i=0;i<LESSONS.length;i++){ if(!S.lessonStars[i]) return i; } return -1; }
+
+/* ================= audio ================= */
+const player = new Audio();
+let ttsWarned = false;
+function playWord(w){
+  const src = AUDIO[w];
+  if(src){
+    player.pause();
+    player.src = src;
+    player.play().catch(()=>{ /* รอผู้เล่นแตะปุ่ม 🔊 เอง */ });
+  } else if('speechSynthesis' in window){
+    const u = new SpeechSynthesisUtterance(w);
+    u.lang='en-US'; u.rate=.75;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } else warnAudio();
+}
+function warnAudio(){
+  if(ttsWarned) return; ttsWarned = true;
+  toast('ไม่ได้ยินเสียง? แตะ "🔇 เสียงไม่ออก?" ดูวิธีแก้นะ','soft');
+}
+
+/* เล่นเสียงอังกฤษแล้วตามด้วยคำอธิบายไทย "แปลว่า..." เหมือนครูไทยสอน — ใช้แค่ตอนรู้จักคำใหม่ (meet phase) */
+const playerTh = new Audio();
+function playWordThenThai(w){
+  playWord(w);
+  const th = AUDIO_TH[w];
+  if(!th) return;
+  player.onended = () => {
+    player.onended = null;
+    playerTh.pause();
+    playerTh.src = th;
+    playerTh.play().catch(()=>{});
+  };
+}
+
+/* ล็อกปุ่มคำตอบไว้ระหว่างฟังเสียง กันเด็กกดมั่วโดยไม่ฟัง — ปลดล็อกเมื่อเสียงจบ (หรือ fallback timer กันค้าง) */
+let unlockTimer = null;
+function lockAnswers(){
+  document.querySelectorAll('.choice, .tile, .hear-btn').forEach(el=>el.classList.add('locked'));
+  const b = $('listen-badge'); if(b) b.classList.remove('hidden');
+}
+function unlockAnswers(){
+  clearTimeout(unlockTimer);
+  document.querySelectorAll('.choice, .tile, .hear-btn').forEach(el=>el.classList.remove('locked'));
+  const b = $('listen-badge'); if(b) b.classList.add('hidden');
+}
+function playWordLocked(w){
+  lockAnswers();
+  clearTimeout(unlockTimer);
+  const src = AUDIO[w];
+  if(src){
+    player.onended = unlockAnswers;
+    player.pause();
+    player.src = src;
+    player.play().catch(()=>{ unlockTimer = setTimeout(unlockAnswers, 1200); });
+    unlockTimer = setTimeout(unlockAnswers, 2500);
+  } else if('speechSynthesis' in window){
+    const u = new SpeechSynthesisUtterance(w);
+    u.lang='en-US'; u.rate=.75;
+    u.onend = unlockAnswers;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+    unlockTimer = setTimeout(unlockAnswers, 1800);
+  } else {
+    warnAudio();
+    unlockTimer = setTimeout(unlockAnswers, 900);
+  }
+}
+
+/* ================= helpers ================= */
+const $ = id => document.getElementById(id);
+/* วลีบางคำมี apostrophe (I'm, don't) — ต้อง escape ก่อนฝังใน onclick="...('...')" ไม่งั้น string จะขาดกลางคัน */
+function escJs(s){ return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+let toastTimer;
+function toast(msg, kind){
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (kind||'');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.className='toast', 1700);
+}
+function show(id){
+  ['login','home','game','match','celebrate','book','stickers'].forEach(s=>$(s).classList.add('hidden'));
+  $(id).classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+
+/* ================= buddy ================= */
+const BUDDY_STAGES = [
+  {min:0,  face:'🐱', name:'ลูกแมวส้มโอ'},
+  {min:5,  face:'😺', name:'ส้มโอนักสำรวจ'},
+  {min:15, face:'😼', name:'ส้มโอนักผจญภัย'},
+  {min:30, face:'🐯', name:'กัปตันส้มโอ'},
+];
+function buddyStage(){
+  const m = masteredCount();
+  let cur = BUDDY_STAGES[0], next = null;
+  for(const st of BUDDY_STAGES){ if(m>=st.min) cur=st; else { next=st; break; } }
+  return {cur, next, m};
+}
+function cheerBuddy(){
+  const b = $('buddy');
+  b.classList.remove('cheer'); void b.offsetWidth; b.classList.add('cheer');
+}
+
+/* ส้มโอตัวจิ๋วที่ตามไปทุกหน้าจอเกม ไม่ใช่แค่อยู่หน้า Home เฉยๆ */
+const MINI_LINE = {
+  meet:   'ฟังไปเรื่อยๆ ได้เลยนะ ไม่ต้องรีบ',
+  match:  'ฟังดีๆ แล้วเลือกเลย 🎧',
+  mix:    'ลองไม่มีตัวช่วยดูนะ เป็นกำลังใจให้!',
+  review: 'ทวนคำเก่ากันหน่อย เดี๋ยวก็นึกออก',
+};
+function renderMiniBuddy(){
+  const face = $('mini-buddy-face');
+  if(!face) return;
+  face.textContent = buddyStage().cur.face;
+  $('mini-buddy-line').textContent = MINI_LINE[phase] || '';
+}
+function bounceMiniBuddy(id){
+  const b = $(id||'mini-buddy');
+  if(!b) return;
+  b.classList.remove('cheer'); void b.offsetWidth; b.classList.add('cheer');
+}
+
+/* ================= sound effects ================= */
+let actx = null;
+function getActx(){
+  if(!actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ actx = null; } }
+  return actx;
+}
+function tone(freq, start, dur, gain){
+  const ctx = getActx(); if(!ctx) return;
+  const t0 = ctx.currentTime + start;
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sine'; osc.frequency.setValueAtTime(freq, t0);
+  g.gain.setValueAtTime(0, t0);
+  g.gain.linearRampToValueAtTime(gain, t0+.015);
+  g.gain.exponentialRampToValueAtTime(.001, t0+dur);
+  osc.connect(g); g.connect(ctx.destination);
+  osc.start(t0); osc.stop(t0+dur+.02);
+}
+function sfxRight(){ try{ tone(523.25,0,.14,.16); tone(783.99,.1,.22,.16); }catch(e){} }
+function sfxWrong(){ try{ tone(330,0,.18,.09); }catch(e){} }
+
+/* ================= home ================= */
+function ensureQuestDay(){
+  if(S.quest.day !== today()){
+    S.quest = {day:today(), review:false, learn:false, game:false, bonus:false};
+    save();
+  }
+}
+function renderHome(){
+  ensureQuestDay();
+  $('star-count').textContent = S.stars;
+  $('day-count').textContent = S.daysDone;
+  $('sticker-count').textContent = (S.stickers||[]).length;
+  $('sticker-total').textContent = UNIT_STICKERS.length;
+
+  const {cur, next, m} = buddyStage();
+  $('buddy-face').textContent = cur.face;
+  const hour = new Date().getHours();
+  const hi = hour<11 ? 'อรุณสวัสดิ์!' : hour<17 ? 'หวัดดี!' : 'สวัสดีตอนเย็น~';
+  const nm = PROFILE ? PROFILE.name : '';
+  const lines = S.visits===0
+    ? [`หวัดดี ${nm}! เราชื่อส้มโอ 🍊 มาทำภารกิจวันแรกกันเลยมั้ย เริ่มจากเรียนคำใหม่ก่อนนะ`]
+    : [hi+' '+nm+' วันนี้มีภารกิจรออยู่แล้วนะ', hi+' '+nm+' ทำภารกิจครบแล้วพักได้เลย ไม่ต้องรีบ', hi+' เล่นวันละนิดก็เก่งขึ้นแล้ว จริงๆ นะ'];
+  $('buddy-line').textContent = pick(lines);
+  $('buddy-meta').innerHTML = `${cur.name} · คำที่แม่นแล้ว ${m} คำ` +
+    (next ? ` · อีก ${next.min-m} คำจะโตเป็น ${next.name}!` : ' · โตเต็มวัยแล้ว! 🎖️');
+
+  /* quests */
+  const learned = learnedList();
+  const due = dueList();
+  const nli = nextLessonIdx();
+  const q = S.quest;
+  let qh = '';
+
+  if(learned.length===0){
+    qh += questRow('🔁','ทวนคำเก่า','เรียนบทแรกก่อน แล้วพรุ่งนี้จะมีคำมารอทวน', q.review, true, '');
+  } else if(q.review){
+    qh += questRow('🔁','ทวนคำเก่า','เรียบร้อย! คำพวกนั้นแม่นขึ้นแล้ว', true, false, '');
+  } else if(due.length>0){
+    qh += questRow('🔁','ทวนคำเก่า',`มี ${due.length} คำถึงคิวทวนวันนี้`, false, false, 'startReview()');
+  } else {
+    qh += questRow('🔁','อุ่นเครื่องคำเก่า','ยังไม่มีคำถึงคิว ทวนเล่นๆ กันสัก 5 คำ', false, false, 'startReview()');
+  }
+
+  if(nli === -1){
+    qh += questRow('🌱','เรียนครบทุกบทแล้ว!','เก่งที่สุด! วันนี้แค่ทวนคำกับเล่นเกมก็รับโบนัสได้เลย', true, false, '');
+  } else if(q.learn){
+    qh += questRow('🌱','เรียนคำใหม่ 3 คำ','วันนี้ได้เพื่อนใหม่ครบแล้ว', true, false, '');
+  } else {
+    qh += questRow('🌱','เรียนคำใหม่ 3 คำ', LESSONS[nli].title, false, false, `startLesson(${nli})`);
+  }
+
+  if(learned.length<3){
+    qh += questRow('🃏','เกมเปิดการ์ดคู่','จะเปิดเมื่อเรียนครบ 3 คำแรก', q.game, true, '');
+  } else if(q.game){
+    qh += questRow('🃏','เกมเปิดการ์ดคู่','สนุกมั้ยล่ะ พรุ่งนี้มีอีกนะ', true, false, '');
+  } else {
+    qh += questRow('🃏','เกมเปิดการ์ดคู่','จับคู่รูปกับคำที่เรียนแล้ว', false, false, 'startMatch()');
+  }
+  $('quest-list').innerHTML = qh;
+
+  const bonusEl = $('quest-bonus');
+  const dayBadge = $('day-badge');
+  if(q.bonus){
+    bonusEl.textContent = '🎁 ภารกิจวันนี้ครบแล้ว! รับดาวโบนัสไปเลย +1 ⭐ แล้วพรุ่งนี้เจอกันนะ';
+    bonusEl.className='quest-bonus won';
+    dayBadge.classList.remove('hidden');
+  } else {
+    bonusEl.textContent = 'ทำครบ 3 อย่าง รับดาวโบนัส +1 ⭐';
+    bonusEl.className='quest-bonus';
+    dayBadge.classList.add('hidden');
+  }
+
+  /* lesson map — โชว์เฉพาะบทที่เรียนจบแล้ว + บทถัดไปที่เล่นได้ + ทีเซอร์อีก 1 บท ไม่ทิ้งกำแพงล็อกทั้งหมดให้เห็นตั้งแต่วันแรก */
+  let lh = '';
+  let gi = 0;
+  const nliForMap = nli;
+  const revealUpTo = nliForMap === -1 ? LESSONS.length - 1 : nliForMap + 1;
+  let hiddenCount = 0;
+  UNITS.forEach(u=>{
+    const unitStartIdx = gi;
+    const visibleInUnit = u.lessons.some((_,k)=> (unitStartIdx+k) <= revealUpTo);
+    if(!visibleInUnit){ hiddenCount += u.lessons.length; gi += u.lessons.length; return; }
+    lh += `<div class="world-label">${u.name}</div>`;
+    u.lessons.forEach(l=>{
+      const i = gi++;
+      if(i > revealUpTo){ hiddenCount++; return; }
+      const stars = S.lessonStars[i]||0;
+      const unlocked = i===0 || (S.lessonStars[i-1]||0)>0;
+      if(!unlocked){
+        lh += `<div class="stage locked"><div class="icon">🔒</div>
+          <div><h3>${l.title}</h3><p>จบบทก่อนหน้าแล้วเจอกัน</p></div></div>`;
+      } else {
+        lh += `<button class="stage" onclick="startLesson(${i})"><div class="icon">${l.icon}</div>
+          <div><h3>${l.title}</h3><p>${l.words.map(x=>x.e).join(' ')}</p></div>
+          <div class="stars">${'★'.repeat(stars)+'☆'.repeat(3-stars)}</div></button>`;
+      }
+    });
+  });
+  if(hiddenCount>0) lh += `<div class="lesson-more">🌊 มีบทผจญภัยรออยู่อีกเพียบ ค่อยๆ ปลดล็อกไปเรื่อยๆ นะ</div>`;
+  $('lesson-list').innerHTML = lh;
+}
+function questRow(icon, title, desc, done, off, onclick){
+  const cls = 'quest' + (done?' done':'') + (off?' off':'');
+  const action = (!done && !off && onclick) ? `onclick="${onclick}"` : '';
+  return `<button class="${cls}" ${action}>
+    <div class="qicon">${icon}</div>
+    <div><div class="qt">${title}</div><div class="qd">${desc}</div></div>
+    <div class="qcheck">${done?'✅':off?'🔒':'▶️'}</div></button>`;
+}
+function questProgressCheck(){
+  const q = S.quest;
+  /* เรียนครบทุกบทแล้ว ไม่มีบทใหม่ให้เรียน — ถือว่าเควสต์ "เรียนคำใหม่" สำเร็จโดยอัตโนมัติ ไม่งั้นโบนัสรายวันจะไม่มีวันครบ */
+  const learnDone = q.learn || nextLessonIdx()===-1;
+  if(!q.bonus && q.review && learnDone && q.game){
+    q.bonus = true;
+    S.stars += 1;
+    S.daysDone += 1;
+    save();
+  }
+}
+function goHome(){
+  player.pause();
+  if('speechSynthesis' in window) speechSynthesis.cancel();
+  renderHome();
+  show('home');
+}
+
+/* ================= lesson engine (teach -> match2 -> mix3) ================= */
+let L=null, lessonIdx=0, phase='meet', step=0, order=[], mistakes=0, roundWrong=0, target=null, mode='lesson';
+let answered=false; /* กันแตะซ้ำ/แตะพลาดในช่วงเสี้ยววินาทีหลังตอบถูก (ก่อนไปข้อถัดไป) ไม่ให้ทำลายชั้นความจำหรือข้ามคำ */
+
+function startLesson(i){
+  L = LESSONS[i]; lessonIdx = i; mode='lesson';
+  phase='meet'; step=0; mistakes=0;
+  order = [...L.words];
+  show('game');
+  renderStep();
+}
+
+const PHASE_NAME = {
+  meet:  'ขั้น 1/3 · <b>รู้จักเพื่อนใหม่</b> — ยังไม่มีคำถาม ฟังสบายๆ',
+  match: 'ขั้น 2/3 · <b>ลองจับคู่</b> — มีคำไทยช่วยอยู่นะ',
+  mix:   'ขั้น 3/3 · <b>เกมรวมพลัง</b> — รอบนี้ไม่มีตัวช่วยแล้ว!',
+  review:'<b>ภารกิจทวนคำ</b> — ช่วยคำเก่าก่อนสมองจะลืม!',
+};
+function renderDots(){
+  const n = order.length;
+  $('dots').innerHTML = Array.from({length:n},(_,i)=>
+    `<div class="dot ${i<step?'done':i===step?'now':''}"></div>`).join('');
+  $('phase-chip').innerHTML = PHASE_NAME[phase];
+}
+function renderStep(){
+  roundWrong = 0;
+  answered = false;
+  renderDots();
+  renderMiniBuddy();
+  if(phase==='meet') renderMeet();
+  else if(phase==='match') renderPickPic(2, true, L.words);
+  else if(phase==='mix') renderPickPic(3, false, L.words);
+  else renderReviewRound();
+}
+
+/* ---------- meet ---------- */
+function renderMeet(){
+  const w = order[step];
+  $('prompt-area').innerHTML = `
+    <div class="task">ส้มโอ: "มารู้จักคำนี้กัน แตะ 🔊 ฟังซ้ำได้เรื่อยๆ เลยนะ"</div>
+    <div class="meet-emoji">${w.e}</div>
+    <div class="meet-word en">${w.w}</div>
+    <div class="meet-th">${w.th}</div>
+    <button class="hear-btn" onclick="playWordThenThai('${escJs(w.w)}')">🔊 ฟังเสียง</button>
+    <div class="meet-tip">ลองพูดตามด้วยก็ได้ ไม่มีใครฟังอยู่ 😄</div>
+    <button class="sound-help-link" onclick="openSound()">🔇 เสียงไม่ออก?</button>`;
+  $('play-area').innerHTML = `
+    <button class="next-btn" onclick="meetNext()">${step<order.length-1 ? 'รู้จักแล้ว! คำต่อไป →' : 'ครบ 3 คำแล้ว ไปเล่นเกมกัน 🎮'}</button>`;
+  setTimeout(()=>playWordThenThai(w.w), 350);
+}
+function meetNext(){
+  step++;
+  if(step >= order.length){ phase='match'; step=0; order = shuffle(L.words); }
+  renderStep();
+}
+
+/* ---------- pick picture from audio ---------- */
+function renderPickPic(nChoices, withThai, pool){
+  target = order[step];
+  const others = shuffle(pool.filter(w=>w.w!==target.w)).slice(0, nChoices-1);
+  const opts = shuffle([target, ...others]);
+  $('prompt-area').innerHTML = `
+    <div class="task">ฟังเสียงแล้วแตะรูปที่ใช่เลย ไม่ต้องรีบนะ</div>
+    <button class="hear-btn" onclick="playWordLocked('${escJs(target.w)}')">🔊 ฟังอีกครั้ง</button>
+    <div class="listen-badge hidden" id="listen-badge">🎧 ฟังอยู่ รอแปปนึงนะ</div>
+    <div><button class="sound-help-link" onclick="openSound()">🔇 เสียงไม่ออก?</button></div>`;
+  $('play-area').innerHTML = `<div class="choices ${nChoices>=3?'three':''}">${
+    opts.map(o=>`<button class="choice" data-w="${o.w}">${o.e}<small>${withThai ? o.th : '&nbsp;'}</small></button>`).join('')
+  }</div>`;
+  lockAnswers();
+  setTimeout(()=>playWordLocked(target.w), 350);
+  bindChoices(c=>c.dataset.w===target.w, (c)=>{
+    c.querySelector('small').textContent = target.w + ' = ' + target.th;
+  });
+}
+
+/* ---------- pick english word from picture ---------- */
+function renderPickWord(pool){
+  target = order[step];
+  const others = shuffle(pool.filter(w=>w.w!==target.w)).slice(0, 2);
+  const opts = shuffle([target, ...others]);
+  $('prompt-area').innerHTML = `
+    <div class="task">รูปนี้คือคำอังกฤษคำไหนนะ</div>
+    <div class="prompt-emoji">${target.e}</div>
+    <div class="prompt-th">${target.th}</div>
+    <div class="listen-badge hidden" id="listen-badge">🎧 ฟังอยู่ รอแปปนึงนะ</div>`;
+  $('play-area').innerHTML = `<div class="choices">${
+    opts.map(o=>`<button class="choice word-choice en" data-w="${o.w}">${o.w}</button>`).join('')
+  }</div>`;
+  bindChoices(c=>c.dataset.w===target.w, ()=>playWord(target.w));
+}
+
+/* ---------- spell ---------- */
+function renderSpell(){
+  target = order[step];
+  const w = target.w;
+  let filled = 0;
+  const distract = shuffle('aeioustmnrlbk'.split('').filter(ch=>!w.includes(ch))).slice(0,2);
+  const tiles = shuffle([...w.split(''), ...distract]);
+  $('prompt-area').innerHTML = `
+    <div class="task">คำนี้แม่นแล้วใช่มั้ย งั้นลองสะกดเองเลย!</div>
+    <div class="prompt-emoji">${target.e}</div>
+    <div class="prompt-th">${target.th}</div>
+    <button class="hear-btn" onclick="playWordLocked('${escJs(w)}')">🔊 ฟังคำนี้</button>
+    <div class="listen-badge hidden" id="listen-badge">🎧 ฟังอยู่ รอแปปนึงนะ</div>`;
+  $('play-area').innerHTML = `
+    <div class="slots">${w.split('').map(()=>'<div class="slot"></div>').join('')}</div>
+    <div class="tiles">${tiles.map((ch,i)=>`<button class="tile en" data-i="${i}" data-ch="${ch}">${ch}</button>`).join('')}</div>`;
+  lockAnswers();
+  setTimeout(()=>playWordLocked(w), 350);
+  const slots = [...document.querySelectorAll('.slot')];
+  document.querySelectorAll('.tile').forEach(t=>{
+    t.onclick = ()=>{
+      if(answered) return; /* สะกดครบแล้ว แตะ tile ที่เหลือไม่นับ */
+      const need = w[filled];
+      if(t.dataset.ch === need){
+        slots[filled].textContent = t.dataset.ch;
+        slots[filled].classList.add('filled');
+        t.classList.add('used');
+        filled++;
+        if(filled === w.length){
+          answered = true;
+          playWord(w);
+          toast(pick(PRAISE),'good');
+          sfxRight(); bounceMiniBuddy();
+          setTimeout(()=>afterRound(), 900);
+        }
+      } else {
+        mistakes++; roundWrong++;
+        t.classList.add('wrong');
+        setTimeout(()=>t.classList.remove('wrong'), 500);
+        sfxWrong();
+        if(roundWrong>=2){
+          const answerEl = [...document.querySelectorAll('.tile')].find(x=>x.dataset.ch===need && !x.classList.contains('used'));
+          if(answerEl){ answerEl.classList.add('hint'); toast('ใบ้ให้นิดนึงนะ 👀','soft'); }
+        } else toast(pick(GENTLE),'soft');
+        playWordLocked(w);
+      }
+    };
+  });
+}
+
+/* ---------- shared choice binding ---------- */
+function bindChoices(isCorrect, onRight){
+  const answerEl = [...document.querySelectorAll('.choice')].find(isCorrect);
+  document.querySelectorAll('.choice').forEach(c=>{
+    c.onclick = ()=>{
+      if(answered) return; /* ตอบไปแล้ว รอไปข้อถัดไป — แตะอะไรก็ไม่นับ */
+      if(isCorrect(c)){
+        answered = true;
+        c.classList.add('right');
+        if(onRight) onRight(c);
+        toast(pick(PRAISE), 'good');
+        sfxRight(); bounceMiniBuddy();
+        setTimeout(()=>afterRound(), 950);
+      } else {
+        mistakes++; roundWrong++;
+        c.classList.add('wrong');
+        setTimeout(()=>c.classList.remove('wrong'), 500);
+        sfxWrong();
+        if(roundWrong>=2 && answerEl){ answerEl.classList.add('hint'); toast('ใบ้ให้นิดนึงนะ 👀','soft'); }
+        else toast(pick(GENTLE),'soft');
+        if(mode==='lesson' || REVIEW_TASK[revTask(target)]!=='spell') playWordLocked(target.w);
+      }
+    };
+  });
+}
+
+/* ---------- round flow ---------- */
+function afterRound(){
+  if(mode==='review'){
+    const p = S.prog[target.w];
+    if(roundWrong===0){ p.box = Math.min(4, p.box+1); }
+    else { p.box = Math.max(1, p.box-1); }
+    p.due = today() + INTERVALS[p.box];
+    save();
+  }
+  step++;
+  if(step >= order.length){
+    if(mode==='lesson' && phase==='match'){ phase='mix'; step=0; order=shuffle(L.words); renderStep(); }
+    else if(mode==='lesson') finishLesson();
+    else finishReview();
+  } else renderStep();
+}
+
+/* ================= review engine ================= */
+const REVIEW_TASK = {}; /* filled per word at session start */
+function revTask(w){ return w.w; }
+function startReview(){
+  mode='review'; phase='review'; step=0; mistakes=0;
+  let queue = dueList();
+  const isWarmup = queue.length===0; /* ยังไม่มีคำถึงคิวจริง — เป็นแค่อุ่นเครื่อง ไม่ใช่ทวนของจริง */
+  if(isWarmup) queue = shuffle(learnedList()).slice(0,5);
+  queue.sort((a,b)=>(S.prog[a.w].box)-(S.prog[b.w].box));
+  order = queue.slice(0,7);
+  order.forEach(w=>{
+    const box = S.prog[w.w].box;
+    /* โหมดสะกดเหมาะกับคำเดี่ยวสั้นๆ ตัวพิมพ์เล็กล้วนเท่านั้น (cat, milk) —
+       คำหลายพยางค์/มีช่องว่าง/ตัวพิมพ์ใหญ่/ยาวเกินไป (police officer, Wednesday, P.E.) สะกดทีละตัวยากเกินไปสำหรับเด็กพื้นฐานศูนย์ */
+    const canSpell = !w.isPhrase && /^[a-z]+$/.test(w.w) && w.w.length<=8;
+    if(canSpell){ REVIEW_TASK[w.w] = box<=1 ? 'pic' : box===2 ? 'word' : 'spell'; }
+    else if(w.isPhrase){ REVIEW_TASK[w.w] = box<=2 ? 'pic' : 'word'; }
+    else{ REVIEW_TASK[w.w] = box<=1 ? 'pic' : 'word'; }
+    /* วันแรกที่เพิ่งเรียนจบบท คำพวกนี้เพิ่งเจอโจทย์ "ฟัง→ชี้รูป" (pic) มาหมาดๆ ในบทเรียนแล้ว
+       อุ่นเครื่องเลยขยับเป็น "ดูรูป→เลือกคำ" (word) แทน กันรู้สึกซ้ำกับสิ่งที่เพิ่งทำ */
+    if(isWarmup && REVIEW_TASK[w.w]==='pic') REVIEW_TASK[w.w] = 'word';
+  });
+  show('game');
+  renderStep();
+}
+function renderReviewRound(){
+  target = order[step];
+  const t = REVIEW_TASK[target.w];
+  const pool = learnedList();
+  if(t==='pic'){ renderPickPicReview(pool); }
+  else if(t==='word'){ renderPickWord(pool); }
+  else renderSpell();
+}
+function renderPickPicReview(pool){
+  /* กันตัวลวงที่ใช้ "รูปเดียวกัน" กับคำตอบ (เช่น water💧 กับ "I want water."💧) ไม่งั้นเด็กแยกไม่ออก ตอบไม่ได้ */
+  const cand = pool.filter(w=>w.w!==target.w && w.e!==target.e);
+  const n = Math.min(4, cand.length+1);
+  const others = shuffle(cand).slice(0, n-1);
+  const opts = shuffle([target, ...others]);
+  $('prompt-area').innerHTML = `
+    <div class="task">ฟังเสียงแล้วแตะรูปที่ใช่เลย</div>
+    <button class="hear-btn" onclick="playWordLocked('${escJs(target.w)}')">🔊 ฟังอีกครั้ง</button>
+    <div class="listen-badge hidden" id="listen-badge">🎧 ฟังอยู่ รอแปปนึงนะ</div>
+    <div><button class="sound-help-link" onclick="openSound()">🔇 เสียงไม่ออก?</button></div>`;
+  $('play-area').innerHTML = `<div class="choices ${n>=3?'three':''}">${
+    opts.map(o=>`<button class="choice" data-w="${o.w}">${o.e}<small>&nbsp;</small></button>`).join('')
+  }</div>`;
+  lockAnswers();
+  setTimeout(()=>playWordLocked(target.w), 350);
+  bindChoices(c=>c.dataset.w===target.w, (c)=>{
+    c.querySelector('small').textContent = target.w + ' = ' + target.th;
+  });
+}
+
+/* ================= finishers ================= */
+function finishLesson(){
+  const stars = mistakes===0 ? 3 : mistakes<=2 ? 2 : 1;
+  const prev = S.lessonStars[lessonIdx]||0;
+  const isNew = prev===0;
+  const gained = Math.max(0, stars - prev);
+  if(stars > prev) S.lessonStars[lessonIdx] = stars;
+  S.stars += gained;
+  L.words.forEach(x=>{ if(!S.prog[x.w]) S.prog[x.w] = {box:1, due: today()+1}; });
+  if(isNew) S.quest.learn = true;
+  S.visits++;
+  questProgressCheck();
+  const newSticker = checkUnitSticker(lessonIdx);
+  save();
+  $('learned-row').innerHTML = L.words.map(x=>
+    `<div class="learned-chip"><span>${x.e}</span>${x.w}</div>`).join('');
+  if(newSticker){
+    $('cheer-emoji').textContent = newSticker.emoji;
+    $('cheer-title').textContent = 'ปลดล็อกสติกเกอร์ใหม่! 🎴';
+    $('cheer-text').textContent = `เก่งมาก! เรียนจบหมวดนี้ครบแล้ว ได้สติกเกอร์ "${newSticker.name}" ไปเก็บในสมุดสติกเกอร์เลย` + (gained>0 ? ` +${gained} ⭐` : '');
+  } else {
+    $('cheer-emoji').textContent = stars===3 ? '🏆' : '🎉';
+    $('cheer-title').textContent = 'จบบทแล้ว!' + (gained>0 ? ' +' + gained + ' ⭐' : '');
+    $('cheer-text').textContent = (stars===3
+      ? 'เพอร์เฟกต์เลย ส้มโอกระโดดดีใจใหญ่!'
+      : 'ที่พลาดไปไม่เป็นไรเลย เดี๋ยวคำพวกนั้นจะแวะกลับมาให้เจออีก')
+      + ' เพื่อนใหม่วันนี้:';
+  }
+  maybeBonusText();
+  show('celebrate');
+  cheerBuddy();
+}
+function finishReview(){
+  const gain = mistakes===0 ? 2 : 1;
+  const alreadyDoneToday = S.quest.review;
+  if(!alreadyDoneToday) S.stars += gain;
+  S.quest.review = true;
+  S.visits++;
+  questProgressCheck();
+  save();
+  $('cheer-emoji').textContent = '🧠';
+  $('cheer-title').textContent = 'ทวนครบแล้ว!' + (alreadyDoneToday ? '' : ' +' + gain + ' ⭐');
+  $('cheer-text').textContent = (mistakes===0
+    ? 'แม่นทุกคำเลย คำพวกนี้เลื่อนขั้นกันใหญ่ 🌳'
+    : 'คำที่พลาดจะกลับมาให้ทวนถี่ขึ้น เดี๋ยวก็แม่นเหมือนกัน')
+    + (alreadyDoneToday ? ' ทวนซ้ำเพื่อฝึกฝนเพิ่มได้เลยนะ (ดาวได้ไปแล้ววันนี้)' : '');
+  $('learned-row').innerHTML = '';
+  maybeBonusText();
+  show('celebrate');
+  cheerBuddy();
+}
+function maybeBonusText(){
+  if(S.quest.bonus && !S.questBonusShown){
+    /* โชว์ครั้งเดียวต่อวัน */
+  }
+  if(S.quest.bonus){
+    $('cheer-text').textContent += ' — และภารกิจวันนี้ครบ 3 อย่างแล้ว! 🎁 โบนัส +1 ⭐';
+  }
+}
+
+/* ================= memory match ================= */
+let memOpen = [], memLock = false, memLeft = 0;
+function startMatch(){
+  /* เลือก 3 คำที่ "รูปไม่ซ้ำกัน" เพื่อไม่ให้มีการ์ดรูปเหมือนกันจับคู่มั่วได้ */
+  const seen = new Set();
+  const pool = shuffle(learnedList()).filter(x=>{ if(seen.has(x.e)) return false; seen.add(x.e); return true; }).slice(0,3);
+  memLeft = pool.length;
+  memOpen = []; memLock = false;
+  const cards = shuffle(pool.flatMap(x=>[
+    {w:x.w, kind:'pic', label:x.e},
+    {w:x.w, kind:'word', label:x.w},
+  ]));
+  $('mem-grid').innerHTML = cards.map((c,i)=>
+    `<button class="mem-card" data-w="${c.w}" data-kind="${c.kind}" data-i="${i}">🌊</button>`).join('');
+  document.querySelectorAll('.mem-card').forEach(el=>{
+    el.onclick = ()=>flipMem(el, cards[+el.dataset.i]);
+  });
+  const mf = $('mini-buddy-face-match'); if(mf) mf.textContent = buddyStage().cur.face;
+  show('match');
+}
+function flipMem(el, card){
+  if(memLock || el.classList.contains('open') || el.classList.contains('matched')) return;
+  el.classList.add('open');
+  el.innerHTML = card.kind==='pic' ? card.label : `<span class="mw en">${card.label}</span>`;
+  if(card.kind==='word') playWord(card.w);
+  memOpen.push({el, card});
+  if(memOpen.length===2){
+    memLock = true;
+    const [a,b] = memOpen;
+    if(a.card.w===b.card.w && a.card.kind!==b.card.kind){
+      setTimeout(()=>{
+        a.el.classList.add('matched'); b.el.classList.add('matched');
+        toast(pick(PRAISE),'good');
+        sfxRight(); bounceMiniBuddy('mini-buddy-match');
+        memOpen=[]; memLock=false;
+        if(--memLeft===0) setTimeout(finishMatch, 700);
+      }, 450);
+    } else {
+      sfxWrong();
+      setTimeout(()=>{
+        [a,b].forEach(x=>{ x.el.classList.remove('open'); x.el.textContent='🌊'; });
+        memOpen=[]; memLock=false;
+        toast('ยังไม่คู่กัน ลองจำตำแหน่งไว้นะ 🤭','soft');
+      }, 900);
+    }
+  }
+}
+function finishMatch(){
+  const alreadyDoneToday = S.quest.game;
+  if(!alreadyDoneToday) S.stars += 1;
+  S.quest.game = true;
+  S.visits++;
+  questProgressCheck();
+  save();
+  $('cheer-emoji').textContent = '🃏';
+  $('cheer-title').textContent = 'จับคู่ครบ!' + (alreadyDoneToday ? '' : ' +1 ⭐');
+  $('cheer-text').textContent = 'ความจำดีมากเลยนะเนี่ย' + (alreadyDoneToday ? ' เล่นซ้ำฝึกความจำได้เรื่อยๆ เลย' : '');
+  $('learned-row').innerHTML = '';
+  maybeBonusText();
+  show('celebrate');
+  cheerBuddy();
+}
+
+/* ================= word book ================= */
+function openBook(){
+  const list = $('book-list');
+  const learned = learnedList();
+  if(learned.length === 0){
+    list.innerHTML = '<div class="empty">ยังไม่มีคำเลย 🌱<br>ไปเรียนบทที่ 1 กับส้มโอก่อน แล้วคำแรกจะมารออยู่ตรงนี้</div>';
+  } else {
+    list.innerHTML = learned.map(x=>{
+      const p = S.prog[x.w];
+      return `<div class="book-item"><span class="emo">${x.e}</span>
+        <div><div class="w en">${x.w}</div><div class="th">${x.th}</div></div>
+        <div class="stage-tag"><span>${STAGE_ICON[p.box]}</span>${STAGE_NAME[p.box]}</div>
+        <button onclick="playWord('${escJs(x.w)}')">🔊</button></div>`;
+    }).join('');
+  }
+  show('book');
+}
+
+/* ================= sheets ================= */
+function openNote(){ $('note-overlay').classList.remove('hidden'); }
+function closeNote(){ $('note-overlay').classList.add('hidden'); }
+function openSound(){ $('sound-overlay').classList.remove('hidden'); }
+function closeSound(){ $('sound-overlay').classList.add('hidden'); }
+
+if(PROFILE){ renderHome(); show('home'); } else { show('login'); }
+</script>
