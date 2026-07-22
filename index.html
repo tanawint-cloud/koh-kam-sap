@@ -215,6 +215,8 @@
   .login-input{width:100%;border:2px solid var(--line);border-radius:14px;padding:12px 14px;font-size:1.05rem;font-family:inherit;background:var(--ground);color:var(--ink)}
   .login-input:focus{outline:none;border-color:var(--sky)}
   .login-hint{min-height:1.2em;font-size:.78rem;color:var(--coral-deep);margin-top:8px}
+  .spinner{display:inline-block;width:15px;height:15px;border:3px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;margin-right:8px;vertical-align:middle}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
   h1.screen-title{font-size:1.15rem;margin:2px 2px 0}
   @media (prefers-reduced-motion: reduce){
@@ -352,20 +354,19 @@
 <!-- ============ NOTE SHEET ============ -->
 <div class="overlay hidden" id="note-overlay" onclick="if(event.target===this)closeNote()">
   <div class="sheet">
-    <h2>💡 ถึงพี่วิน — เฟส 1 เพิ่มอะไรบ้าง</h2>
+    <h2>💡 ถึงพี่วิน — สรุปทั้งเกมตอนนี้</h2>
     <ul>
-      <li><b>เสียงอัดจริงฝังในเกม</b> — ทุกคำใช้ไฟล์เสียงจริง ไม่ง้อระบบเสียงของเครื่องแล้ว เสียงออกชัดเหมือนกันทุกอุปกรณ์</li>
-      <li><b>ระบบทวนเว้นระยะ (Spaced Repetition)</b> — ทุกคำมีระดับความแม่น 🌱→🌿→🌳→⭐ เกมนัดคำกลับมาทวนตอนที่สมองกำลังจะลืมพอดี (1 → 2 → 4 → 7 วัน) ตอบถูกเลื่อนขั้น ตอบพลาดถอยมาทวนถี่ขึ้น</li>
-      <li><b>บันไดความจำ</b> — คำยิ่งแม่น โจทย์ยิ่งเลื่อนขั้น: ฟัง→ชี้รูป → เห็นรูป→เลือกคำอังกฤษ → สะกดเอง</li>
-      <li><b>ภารกิจวันนี้ 3 อย่าง จบแล้วจบเลย</b> — ทวนคำ + เรียนใหม่ 3 คำ + เกมการ์ดคู่ ครบแล้วได้ดาวโบนัสและ "จบมื้อ" ราวๆ 10 นาที ไม่มีการบังคับเล่นต่อ</li>
-      <li><b>ปฏิทินสะสมไม่ลงโทษ</b> — นับแต่วันที่ทำภารกิจครบ ขาดกี่วันก็ไม่รีเซ็ต</li>
-      <li><b>คลังคำ 39 คำ 13 บท 7 หมวด</b> — สัตว์ อาหาร โรงเรียน ร่างกาย ครอบครัว สี ธรรมชาติ ปลดล็อกตามลำดับ</li>
-      <li><b>ส้มโอวิวัฒนาการ</b> — โตขึ้นตามจำนวนคำที่ "แม่นแล้ว" (ไม่ใช่ตามเวลาที่เล่น) 🐱→😺→😼→🐯</li>
-      <li>หลักเดิมคงไว้ครบ: สอนก่อนถาม, ไม่มีหัวใจ/หักคะแนน, ผิด 2 ครั้งใบ้ให้, ภาษาพี่คุยกับน้อง</li>
-      <li><b>กันกดมั่ว (ใหม่จากคอมเมนต์พี่วิน)</b> — ปุ่มคำตอบจะล็อกไว้จริงระหว่างเสียงเล่น (ทั้งตอนเริ่มด่านและหลังตอบผิด) มีป้าย "🎧 ฟังอยู่นะ" ขึ้นให้เห็น เด็กกดรัวๆ ข้ามการฟังไม่ได้อีกต่อไป แต่ไม่ใช่การลงโทษ — แค่บังคับให้ฟังก่อนทุกครั้ง</li>
-      <li><b>5 จุด UX ที่แก้จากรีวิว "มองในมุมหลาน"</b> — (1) ป้าย "ทำครบแล้ว" โชว์เฉพาะตอนทำครบจริง ไม่โกหกตั้งแต่วันแรก (2) แผนที่บทเรียนโชว์แค่บทที่เรียนจบ+บทถัดไป+ทีเซอร์อีก 1 บท ไม่ทิ้งกำแพงล็อก 12 ใบให้เห็นวันแรก (3) ส้มโอตัวจิ๋วตามไปทุกหน้าจอเกม ไม่หายไปตอนตอบคำถาม (4) มีเสียงติ๊ง/ปุ๊กตอนตอบถูก-ผิด เพิ่มความฟิน (5) ป้ายวันสะสมเปลี่ยนเป็น "วันสำเร็จ" ให้เข้าใจง่ายขึ้น</li>
-      <li><b>ระบบชื่อ + รหัสลับ 4 ตัว (ใหม่)</b> — เปิดเกมครั้งแรกจะให้ตั้งชื่อ+PIN ไว้ เพื่อเตรียมไปเชื่อมกับหลังบ้าน (Google ชีต) ต่อไป — ตอนนี้ยังเก็บแค่ในเครื่อง แต่โค้ดเตรียม `pushProgress()` ไว้แล้ว พอมี URL ของ Apps Script ก็เสียบต่อได้เลยไม่ต้องแก้ที่อื่น มีปุ่ม "🔁 เปลี่ยนผู้เล่น" ให้ล้างข้อมูลเริ่มโปรไฟล์ใหม่ได้ด้วย</li>
+      <li><b>📚 เนื้อหา:</b> 25 บทเรียน 11 หมวด (สัตว์, ทักทาย, ตัวเลข, อาหาร, โรงเรียน, ขอความช่วยเหลือในห้องเรียน, ประโยคแรกของฉัน, ร่างกาย, บ้าน+สี+ครอบครัว, ท้องฟ้า, การกระทำ) ปลดล็อกทีละบทตามลำดับ</li>
+      <li><b>🔊 เสียง 2 ภาษา:</b> ทุกคำมีเสียงอังกฤษจริงฝังในเกม และตอน "รู้จักเพื่อนใหม่" (สอนคำครั้งแรก) จะมีเสียงไทยอธิบายต่อท้ายอัตโนมัติ ("แปลว่า...") เหมือนมีครูไทยสอน — ตอนฝึก/ทวนคำจะเป็นอังกฤษล้วนเพื่อฝึกฟังจริง</li>
+      <li><b>🧠 ทวนเว้นระยะ (Spaced Repetition):</b> ทุกคำมีระดับความแม่น 🌱→🌿→🌳→⭐ นัดทวนตอนสมองใกล้ลืมพอดี (1→2→4→7 วัน) บันไดโจทย์เลื่อนขั้นตามความแม่น: ฟัง→ชี้รูป → ดูรูป→เลือกคำ → สะกดเอง</li>
+      <li><b>🗺️ ภารกิจวันนี้ 3 อย่าง:</b> ทวนคำ + เรียนใหม่ + เกมการ์ดคู่ ครบแล้วได้ดาวโบนัส "จบมื้อ" ~10 นาที ปฏิทินสะสมไม่ลงโทษ (ขาดวันไม่รีเซ็ต)</li>
+      <li><b>🎴 สติกเกอร์สะสม:</b> เรียนจบทุกบทในหมวดหนึ่งครบ ปลดล็อกสติกเกอร์ประจำหมวดทันที (11 แบบ) เก็บดูได้ในสมุดสติกเกอร์</li>
+      <li><b>🐱 ส้มโอวิวัฒนาการ:</b> โตตามจำนวนคำที่ "แม่นแล้ว" 🐱→😺→😼→🐯 ตัวจิ๋วตามไปทุกหน้าจอเกม ไม่ใช่แค่หน้า Home</li>
+      <li><b>🔐 ระบบชื่อ+PIN:</b> ตั้งครั้งแรกแล้วเปลี่ยนเครื่องเล่นได้ ระบบดึงความคืบหน้ากลับมาให้อัตโนมัติ (เช็คกับหลังบ้านตอนล็อกอิน)</li>
+      <li><b>📊 หลังบ้าน (Google ชีต):</b> แยก 2 แท็บ — "ล่าสุด" (1 แถวต่อคน อัปเดตทับ อ่านง่าย มีคอลัมน์ "ความคืบหน้า" สรุปเป็นข้อความ) กับ "ประวัติ" (เพิ่มแถวแค่วันที่เล่นสำเร็จจริง ไม่ท่วมชีต)</li>
+      <li>หลักการเดิมคงไว้ครบ: สอนก่อนถาม, ไม่มีหัวใจ/หักคะแนน, ผิด 2 ครั้งใบ้ให้, ปุ่มคำตอบล็อกระหว่างฟังกันกดมั่ว, ไม่มี leaderboard/การเปรียบเทียบกับใคร, ภาษาพี่คุยกับน้อง</li>
     </ul>
+    <p style="font-size:.72rem;color:var(--ink-soft);margin-top:10px">*หมายเหตุถึงตัวเอง: อัปเดตโน้ตนี้ทุกครั้งที่เพิ่มฟีเจอร์ใหญ่ — เคยลืมจนโน้ต stale มาแล้วรอบนึง</p>
     <button class="ghost-btn close" onclick="closeNote()">ปิด</button>
   </div>
 </div>
@@ -503,7 +504,7 @@ async function submitProfile(){
   PROFILE = {name, pin};
   saveProfile(PROFILE);
 
-  if(btn){ btn.disabled = true; btn.textContent = 'กำลังเช็คว่าเคยเล่นเครื่องอื่นมั้ย...'; }
+  if(btn){ btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>กำลังเช็คว่าเคยเล่นเครื่องอื่นมั้ย...'; }
   const restored = await fetchRestoredState(name, pin);
   if(restored){ S = restored; save(); }
   if(btn){ btn.disabled = false; btn.textContent = 'เริ่มผจญภัยกันเลย! 🚀'; }
@@ -542,10 +543,17 @@ function pushProgress(){
       body: JSON.stringify({
         name:PROFILE.name, pin:PROFILE.pin, stars:S.stars, daysDone:S.daysDone,
         wordsLearned:Object.keys(S.prog).length, mastered:masteredCount(), ts:Date.now(),
+        summary: progressSummary(),
         fullState: JSON.stringify(S)
       })
     }).catch(()=>{});
   }catch(e){}
+}
+/* สรุปความคืบหน้าแบบมนุษย์อ่านง่าย ให้พี่วินเห็นในชีตหลังบ้านโดยไม่ต้องแกะ JSON */
+function progressSummary(){
+  const nli = nextLessonIdx();
+  const lessonPos = nli===-1 ? `จบทุกบทแล้ว! (${LESSONS.length}/${LESSONS.length})` : `กำลังเรียนบทที่ ${nli+1}/${LESSONS.length}`;
+  return `${lessonPos} · คำที่แม่นแล้ว ${masteredCount()} คำ · สติกเกอร์ ${(S.stickers||[]).length}/${UNIT_STICKERS.length} · เล่นมาแล้ว ${S.daysDone} วัน`;
 }
 function learnedList(){ return Object.keys(S.prog).map(w=>META[w]).filter(Boolean); }
 function masteredCount(){ return Object.values(S.prog).filter(p=>p.box>=3).length; }
@@ -795,7 +803,7 @@ function renderHome(){
       }
     });
   });
-  if(hiddenCount>0) lh += `<div class="lesson-more">🌊 อีก ${hiddenCount} บทรออยู่ข้างหน้า ค่อยๆ ปลดล็อกไปเรื่อยๆ นะ</div>`;
+  if(hiddenCount>0) lh += `<div class="lesson-more">🌊 มีบทผจญภัยรออยู่อีกเพียบ ค่อยๆ ปลดล็อกไปเรื่อยๆ นะ</div>`;
   $('lesson-list').innerHTML = lh;
 }
 function questRow(icon, title, desc, done, off, onclick){
@@ -1007,13 +1015,17 @@ function revTask(w){ return w.w; }
 function startReview(){
   mode='review'; phase='review'; step=0; mistakes=0;
   let queue = dueList();
-  if(queue.length===0) queue = shuffle(learnedList()).slice(0,5);
+  const isWarmup = queue.length===0; /* ยังไม่มีคำถึงคิวจริง — เป็นแค่อุ่นเครื่อง ไม่ใช่ทวนของจริง */
+  if(isWarmup) queue = shuffle(learnedList()).slice(0,5);
   queue.sort((a,b)=>(S.prog[a.w].box)-(S.prog[b.w].box));
   order = queue.slice(0,7);
   order.forEach(w=>{
     const box = S.prog[w.w].box;
     if(w.isPhrase){ REVIEW_TASK[w.w] = box<=2 ? 'pic' : 'word'; }
     else{ REVIEW_TASK[w.w] = box<=1 ? 'pic' : box===2 ? 'word' : 'spell'; }
+    /* วันแรกที่เพิ่งเรียนจบบท คำพวกนี้เพิ่งเจอโจทย์ "ฟัง→ชี้รูป" (pic) มาหมาดๆ ในบทเรียนแล้ว
+       อุ่นเครื่องเลยขยับเป็น "ดูรูป→เลือกคำ" (word) แทน กันรู้สึกซ้ำกับสิ่งที่เพิ่งทำ */
+    if(isWarmup && REVIEW_TASK[w.w]==='pic') REVIEW_TASK[w.w] = 'word';
   });
   show('game');
   renderStep();
