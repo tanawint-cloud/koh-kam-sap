@@ -701,15 +701,23 @@ function warnAudio(){
 /* เล่นเสียงอังกฤษแล้วตามด้วยคำอธิบายไทย "แปลว่า..." เหมือนครูไทยสอน — ใช้แค่ตอนรู้จักคำใหม่ (meet phase) */
 const playerTh = new Audio();
 function playWordThenThai(w){
+  stopAllAudio();
   playWord(w);
   const th = AUDIO_TH[w];
   if(!th) return;
   player.onended = () => {
     player.onended = null;
     playerTh.pause();
+    playerTh.currentTime = 0;
     playerTh.src = th;
     playerTh.play().catch(()=>{});
   };
+}
+/* หยุดเสียงทั้งหมดทันที (อังกฤษ+ไทย+TTS) กันเสียงคำเก่าค้างไปซ้อนคำใหม่ตอนกดข้าม */
+function stopAllAudio(){
+  try{ player.onended = null; player.pause(); }catch(e){}
+  try{ playerTh.onended = null; playerTh.pause(); }catch(e){}
+  try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){}
 }
 
 /* ล็อกปุ่มคำตอบไว้ระหว่างฟังเสียง กันเด็กกดมั่วโดยไม่ฟัง — ปลดล็อกเมื่อเสียงจบ (หรือ fallback timer กันค้าง) */
@@ -944,8 +952,7 @@ function questProgressCheck(){
   }
 }
 function goHome(){
-  player.pause();
-  if('speechSynthesis' in window) speechSynthesis.cancel();
+  stopAllAudio();
   renderHome();
   show('home');
 }
@@ -975,6 +982,7 @@ function renderDots(){
   $('phase-chip').innerHTML = PHASE_NAME[phase];
 }
 function renderStep(){
+  stopAllAudio();
   roundWrong = 0;
   answered = false;
   renderDots();
