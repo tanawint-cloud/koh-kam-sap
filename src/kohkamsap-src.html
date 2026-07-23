@@ -224,6 +224,31 @@
   @media (prefers-reduced-motion: reduce){
     *{animation:none!important;transition:none!important}
   }
+  /* ===== ห้องนิทานส้มโอ ===== */
+  .story-card{width:100%;display:flex;align-items:center;gap:12px;background:linear-gradient(120deg,#FFF3D6,#FFE0E0);border:2px solid #F4C36B;border-radius:18px;padding:13px 15px;margin:6px 0 14px;cursor:pointer;box-shadow:var(--shadow);text-align:left;font-family:inherit}
+  .story-card:active{transform:scale(.99)}
+  .story-card .sc-emoji{font-size:2rem;flex:none}
+  .story-card .sc-txt{flex:1;display:flex;flex-direction:column}
+  .story-card .sc-txt b{font-size:1.02rem;color:var(--ink)}
+  .story-card .sc-txt small{font-size:.74rem;color:#9a6a1a;margin-top:2px}
+  .story-card .sc-go{font-size:1.1rem;color:#C7413F;flex:none}
+  .story-item{display:flex;align-items:center;gap:13px;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:11px;box-shadow:var(--shadow)}
+  .story-item .si-cover{font-size:2rem;width:52px;height:52px;display:grid;place-items:center;background:#FFF3D6;border-radius:14px;flex:none}
+  .story-item .si-txt{flex:1}
+  .story-item .si-txt b{font-size:.98rem}
+  .story-item .si-txt small{display:block;font-size:.72rem;color:var(--ink-soft);margin-top:2px}
+  .story-item.locked{opacity:.55}
+  .story-item .si-go{border:0;background:var(--primary,#EF6461);color:#fff;font-weight:700;border-radius:12px;padding:9px 15px;font-size:.85rem;font-family:inherit;cursor:pointer;flex:none}
+  .story-item .si-done{color:var(--teal,#149E92);font-weight:700;font-size:.8rem;flex:none}
+  .story-item .si-lock{color:var(--ink-soft);font-size:.74rem;flex:none;text-align:center;line-height:1.4}
+  .sr-sent{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:22px 18px;text-align:center;box-shadow:var(--shadow)}
+  .sr-emoji{font-size:4rem;line-height:1;margin-bottom:8px}
+  .sr-en{font-size:1.5rem;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.3}
+  .sr-th{font-size:1rem;color:var(--ink-soft);margin-bottom:16px;line-height:1.5}
+  .sr-quiz-choice{display:flex;align-items:center;gap:12px;width:100%;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:13px 16px;margin-bottom:10px;font-size:1rem;font-family:inherit;cursor:pointer;color:var(--ink)}
+  .sr-quiz-choice .qc-emo{font-size:1.6rem}
+  .sr-quiz-choice.right{border-color:var(--teal,#149E92);background:#E4F4F1}
+  .sr-quiz-choice.wrong{border-color:#E88;background:#FBE4E2}
 </style>
 
 <div class="app">
@@ -272,6 +297,12 @@
       <div id="quest-list"></div>
       <div class="quest-bonus" id="quest-bonus"></div>
     </div>
+
+    <button class="story-card" onclick="openStories()">
+      <span class="sc-emoji">📖</span>
+      <span class="sc-txt"><b>ห้องนิทานส้มโอ</b><small id="story-sub">อ่าน+ฟังเรื่องสนุกๆ ของเจ้าแมวส้มโอ</small></span>
+      <span class="sc-go">▶</span>
+    </button>
 
     <div class="world-label" id="lesson-header">🗺️ แผนที่บทเรียน</div>
     <div id="lesson-list" style="display:flex;flex-direction:column;gap:12px"></div>
@@ -340,6 +371,28 @@
     </div>
     <p style="font-size:.8rem;color:var(--ink-soft);text-align:center;line-height:1.7">เรียนจบทุกบทในหมวดหนึ่งๆ แล้วจะได้สติกเกอร์ประจำหมวดนั้นทันที!</p>
     <div class="sticker-grid" id="sticker-grid"></div>
+  </div>
+
+  <!-- ============ STORY LIST ============ -->
+  <div id="storylist" class="hidden">
+    <div class="game-top">
+      <button class="back" onclick="goHome()">←</button>
+      <h1 class="screen-title" style="flex:1;text-align:center">📖 ห้องนิทานส้มโอ</h1>
+      <div style="width:42px"></div>
+    </div>
+    <p style="font-size:.8rem;color:var(--ink-soft);text-align:center;line-height:1.7">เรื่องสั้นของเจ้าแมวส้มโอ อ่านไป ฟังไป สนุกไป 🐱<br>เรียนบทเรียนไปเรื่อยๆ แล้วตอนใหม่จะค่อยๆ ปลดล็อก</p>
+    <div id="story-list"></div>
+  </div>
+
+  <!-- ============ STORY READER ============ -->
+  <div id="storyread" class="hidden">
+    <div class="game-top">
+      <button class="back" onclick="openStories()">←</button>
+      <div class="phase-chip" id="story-title"></div>
+      <div style="width:42px"></div>
+    </div>
+    <div class="dots" id="story-dots"></div>
+    <div id="story-body"></div>
   </div>
 
 </div>
@@ -528,6 +581,7 @@ const LESSONS = UNITS.flatMap(u=>u.lessons);
 const ALL_WORDS = LESSONS.flatMap(l=>l.words);
 const META = {}; ALL_WORDS.forEach(x=>META[x.w]=x);
 const READ = {"cat": "แคท", "dog": "ด็อก", "fish": "ฟิช", "bird": "เบิร์ด", "pig": "พิก", "cow": "คาว", "Hello!": "เฮล-โหล", "Hi!": "ไฮ", "Nice to meet you!": "ไน้ซ์ ทู มีท ยู", "How are you?": "ฮาว อาร์ ยู", "I'm fine, thank you.": "ไอม์ ไฟน์ แธ็งก์ ยู", "Goodbye!": "กู๊ด-บาย", "one": "วัน", "two": "ทู", "three": "ธรี", "four": "โฟร์", "five": "ไฟฟ์", "six": "ซิกซ์", "seven": "เซ-เวิน", "eight": "เอท", "nine": "ไนน์", "ten": "เท็น", "egg": "เอ้ก", "milk": "มิลก์", "rice": "ไรซ์", "water": "วอ-เท่อร์", "bread": "เบร้ด", "apple": "แอ๊ป-เปิ้ล", "book": "บุ๊ก", "pen": "เพ็น", "bag": "แบ็ก", "chair": "แชร์", "ruler": "รู้-เล่อร์", "pencil": "เพ็น-ซิล", "May I go to the toilet?": "เมย์ ไอ โก ทู เดอะ ทอย-เล็ท", "I don't understand.": "ไอ โด้นท์ อัน-เดอร์-สแตนด์", "Can you repeat, please?": "แคน ยู รี-พีท พลีส", "Can I have a pencil?": "แคน ไอ แฮฟ อะ เพ็น-ซิล", "Excuse me.": "เอ็กซ์-คิ้วส์ มี", "I don't know.": "ไอ โด้นท์ โน", "This is a cat.": "ดิส อิส อะ แคท", "This is a dog.": "ดิส อิส อะ ด็อก", "I have a fish.": "ไอ แฮฟ อะ ฟิช", "I like milk.": "ไอ ไลก์ มิลก์", "I see a bird.": "ไอ ซี อะ เบิร์ด", "I have a pencil.": "ไอ แฮฟ อะ เพ็น-ซิล", "eye": "อาย", "ear": "เอียร์", "nose": "โนส", "hand": "แฮนด์", "foot": "ฟุท", "mouth": "เมาธ์", "mother": "มา-เธ่อร์", "father": "ฟา-เธ่อร์", "baby": "เบ-บี๋", "sister": "ซิส-เท่อร์", "brother": "บรา-เธ่อร์", "grandmother": "แกรนด์-มา-เธ่อร์", "grandfather": "แกรนด์-ฟา-เธ่อร์", "red": "เร้ด", "blue": "บลู", "green": "กรีน", "yellow": "เยล-โล่", "black": "แบล็ก", "white": "ไวท์", "purple": "เพอร์-เพิ่ล", "orange": "ออ-เร้นจ์", "pink": "พิงก์", "sun": "ซัน", "moon": "มูน", "star": "สตาร์", "rain": "เรน", "tree": "ทรี", "flower": "ฟลาว-เว่อร์", "run": "รัน", "sleep": "สลีป", "swim": "สวิม", "Monday": "มัน-เดย์", "Tuesday": "ทิ้วส์-เดย์", "Wednesday": "เว้นส์-เดย์", "Thursday": "เธิร์ส-เดย์", "Friday": "ไฟร-เดย์", "Saturday": "แซ-เทอร์-เดย์", "Sunday": "ซัน-เดย์", "wake up": "เวก อัพ", "morning": "มอร์-นิ่ง", "night": "ไนท์", "breakfast": "เบร้ก-เฟิสต์", "lunch": "ลันช์", "dinner": "ดิน-เน่อร์", "homework": "โฮม-เวิร์ก", "bath": "บาธ", "bedtime": "เบ๊ด-ไทม์", "sunny": "ซัน-นี่", "rainy": "เร-นี่", "cloudy": "คลาว-ดี้", "windy": "วิน-ดี้", "hot": "ฮอท", "cold": "โคลด์", "snow": "สโนว์", "rainbow": "เรน-โบว์", "storm": "สตอร์ม", "happy": "แฮ้พ-ปี้", "sad": "แซด", "angry": "แอง-กรี้", "tired": "ไท-เอิร์ด", "scared": "สแกร์ด", "excited": "เอ็ก-ไซ-เต็ด", "hungry": "ฮัง-กรี้", "thirsty": "เธิร์ส-ตี้", "sick": "ซิก", "math": "แมธ", "science": "ไซ-เอินซ์", "art": "อาร์ท", "English": "อิง-ลิช", "P.E.": "พี-อี", "music": "มิว-สิก", "teacher": "ที-เช่อร์", "student": "สติ้ว-เดินท์", "friend": "เฟรนด์", "principal": "พริน-ซิ-เพิ่ล", "nurse": "เนิร์ส", "canteen": "แคน-ทีน", "banana": "บะ-นา-น่า", "mango": "แมง-โก้", "watermelon": "วอ-เท่อร์-เมล-เล่อน", "chicken": "ชิค-เค่น", "noodles": "นู้-เดิ้ลส์", "vegetable": "เว้จ-ทะ-เบิ้ล", "grape": "เกรป", "shrimp": "ชริมพ์", "soup": "ซุป", "car": "คาร์", "bus": "บัส", "bike": "ไบก์", "train": "เทรน", "boat": "โบท", "airplane": "แอร์-เพลน", "taxi": "แท็ก-ซี่", "motorcycle": "มอ-เท่อร์-ไซ-เคิ่ล", "walk": "วอล์ก", "hospital": "ฮอส-พิ-เทิ่ล", "park": "พาร์ค", "market": "มาร์-เก็ต", "restaurant": "เร้ส-เทอ-รองต์", "bank": "แบงก์", "post office": "โพสต์ ออฟ-ฟิศ", "circle": "เซอร์-เคิ่ล", "square": "สแควร์", "triangle": "ไทร-แอง-เกิ่ล", "heart": "ฮาร์ท", "diamond": "ได-มอนด์", "cube": "คิวบ์", "big": "บิ๊ก", "small": "สมอล", "fast": "ฟาสต์", "slow": "สโลว์", "heavy": "เฮฟ-วี่", "light": "ไลท์", "What is this?": "วอท อิส ดิส", "Where is it?": "แวร์ อิส อิท", "How old are you?": "ฮาว โอลด์ อาร์ ยู", "What's your name?": "วอทส์ ยัวร์ เนม", "Can I help you?": "แคน ไอ เฮลป์ ยู", "What time is it?": "วอท ไทม์ อิส อิท", "Please.": "พลีส", "Thank you!": "แธ็งก์ ยู", "Sorry!": "ซอ-รี่", "You're welcome.": "ยัวร์ เวล-คัม", "Good job!": "กุด จ็อบ", "Well done!": "เวล ดัน", "birthday": "เบิร์ธ-เดย์", "cake": "เค้ก", "candle": "แคน-เดิ้ล", "gift": "กิฟท์", "balloon": "บะ-ลูน", "party": "พาร์-ตี้", "I want water.": "ไอ วอนท์ วอ-เท่อร์", "I am happy.": "ไอ แอม แฮ้พ-ปี้", "I can swim.": "ไอ แคน สวิม", "This is my bag.": "ดิส อิส มาย แบ็ก", "I go to school.": "ไอ โก ทู สคูล", "I love my family.": "ไอ เลิฟ มาย แฟ้ม-มิลี่", "Stand up!": "สแตนด์ อัพ", "Sit down!": "ซิท ดาวน์", "Be quiet, please.": "บี ไคว-เอิท พลีส", "Listen!": "ลิส-เซ่น", "Look!": "ลุก", "Repeat after me.": "รี-พีท แอฟ-เต่อร์ มี", "Open your book.": "โอ-เพิ่น ยัวร์ บุ๊ก", "Close your book.": "โคลส ยัวร์ บุ๊ก", "Raise your hand.": "เรส ยัวร์ แฮนด์", "money": "มัน-นี่", "baht": "บาท", "buy": "บาย", "How much is it?": "ฮาว มัช อิส อิท", "cheap": "ชีป", "expensive": "เอ็กซ์-เพน-ซีฟ", "doctor": "ด็อก-เท่อร์", "police officer": "โพ-ลิศ ออฟ-ฟิ-เซอร์", "farmer": "ฟาร์-เม่อร์", "driver": "ไดร-เว่อร์", "cook": "คุก", "turn left": "เทิร์น เลฟท์", "turn right": "เทิร์น ไรท์", "go straight": "โก สเทรท", "near": "เนียร์", "far": "ฟาร์", "It's one o'clock.": "อิทส์ วัน โอ-คล็อก", "It's two o'clock.": "อิทส์ ทู โอ-คล็อก", "It's three o'clock.": "อิทส์ ธรี โอ-คล็อก", "It's six o'clock.": "อิทส์ ซิกซ์ โอ-คล็อก", "It's nine o'clock.": "อิทส์ ไนน์ โอ-คล็อก", "It's twelve o'clock.": "อิทส์ ทเวลฟ์ โอ-คล็อก", "summer": "ซัม-เม่อร์", "rainy season": "เร-นี่ ซี-เซิ่น", "winter": "วิน-เท่อร์"}; /* คำอ่านภาษาไทย โชว์ตอนสอน+สมุดคำ ไม่โชว์ตอนควิซ */
+const STORIES = [{"id": "ep1", "title": "ตอนที่ 1 · ส้มโอหิวข้าว", "cover": "🍚", "unlock": 6, "sents": [["This is my cat.", "นี่คือแมวของฉัน ชื่อ 'ส้มโอ'", "🐱"], ["The cat is hungry.", "ส้มโอหิวข้าวจัง", "🤤"], ["I have rice and fish.", "ฉันมีข้าวกับปลาให้ส้มโอ", "🍚"], ["The cat is happy!", "ส้มโออิ่มแล้ว มีความสุขมาก!", "😺"]], "hook": "ส้มโออิ่มแล้ว อยากออกไปเที่ยว... พรุ่งนี้จะไปไหนนะ? 🐾", "quiz": ["ส้มโอหิว ฉันให้อะไรกิน?", [["🍚🐟", "ข้าวกับปลา", true], ["🍎", "แอปเปิล", false], ["🥛", "นม", false]]]}, {"id": "ep2", "title": "ตอนที่ 2 · เพื่อนใหม่ของส้มโอ", "cover": "🐶", "unlock": 12, "sents": [["The cat goes to school.", "ส้มโอไปโรงเรียน", "🏫"], ["The cat sees a dog.", "ส้มโอเจอเจ้าหมา", "🐶"], ["\"Hi! Nice to meet you!\"", "ส้มโอทักว่า 'Hi! ยินดีที่ได้รู้จัก!'", "🤝"], ["Now they are friends.", "ตอนนี้ส้มโอกับหมาเป็นเพื่อนกันแล้ว", "👬"]], "hook": "ส้มโอมีเพื่อนใหม่แล้ว! แต่วันต่อมา... ฝนตกหนักเลย ☔", "quiz": ["ส้มโอเจอใครที่โรงเรียน?", [["🐶", "เจ้าหมา", true], ["🐦", "นก", false], ["🐷", "หมู", false]]]}, {"id": "ep3", "title": "ตอนที่ 3 · ฝนตกกับรุ้งกินน้ำ", "cover": "🌈", "unlock": 18, "sents": [["It is rainy today.", "วันนี้ฝนตก ออกไปเล่นไม่ได้เลย", "🌧️"], ["The cat is sad.", "ส้มโอเศร้าจัง", "😿"], ["Look! A rainbow!", "เอ๊ะ! ดูสิ มีรุ้งกินน้ำด้วย!", "🌈"], ["The cat is happy again.", "ส้มโอหายเศร้า ยิ้มได้อีกครั้ง", "😸"]], "hook": "ฟ้าใสแล้ว! ส้มโอหิวขึ้นมาเลย อยากไปตลาด 🛒", "quiz": ["อะไรทำให้ส้มโอหายเศร้า?", [["🌈", "เห็นรุ้งกินน้ำ", true], ["🍚", "กินข้าว", false], ["😴", "นอน", false]]]}, {"id": "ep4", "title": "ตอนที่ 4 · ส้มโอไปตลาด", "cover": "🏪", "unlock": 24, "sents": [["The cat goes to the market.", "ส้มโอไปตลาด", "🏪"], ["\"How much is it?\"", "ส้มโอถามว่า 'ราคาเท่าไหร่?'", "💸"], ["\"Banana and milk, please.\"", "'ขอกล้วยกับนมด้วยค่ะ'", "🍌"], ["\"Thank you!\"", "'ขอบคุณค่ะ!'", "🙌"]], "hook": "ได้ของอร่อยกลับบ้าน! อีกไม่กี่วันจะมีวันพิเศษของส้มโอ 🎂", "quiz": ["ส้มโอซื้ออะไรที่ตลาด?", [["🍌🥛", "กล้วยกับนม", true], ["🐟", "ปลา", false], ["🍞", "ขนมปัง", false]]]}, {"id": "ep5", "title": "ตอนที่ 5 · สุขสันต์วันเกิดส้มโอ", "cover": "🎂", "unlock": 32, "sents": [["Today is my birthday!", "วันนี้วันเกิดส้มโอ!", "🎂"], ["I have a cake and balloons.", "มีทั้งเค้กและลูกโป่ง", "🎈"], ["My friends come to the party.", "เพื่อนๆ มางานปาร์ตี้กันเต็มเลย", "🎉"], ["I am so happy!", "ส้มโอมีความสุขที่สุด!", "😻"]], "hook": "ปาร์ตี้สนุกมาก! พอตกกลางคืน ส้มโอง่วงแล้ว... 🌙", "quiz": ["วันนี้เป็นวันอะไรของส้มโอ?", [["🎂", "วันเกิด", true], ["🏫", "วันไปโรงเรียน", false], ["🌧️", "วันฝนตก", false]]]}, {"id": "ep6", "title": "ตอนที่ 6 · ราตรีสวัสดิ์ ส้มโอ", "cover": "🌙", "unlock": 40, "sents": [["It is night now.", "ตอนนี้กลางคืนแล้ว", "🌃"], ["The cat takes a bath.", "ส้มโออาบน้ำก่อนนอน", "🛁"], ["\"I love my family.\"", "ส้มโอบอกว่า 'หนูรักครอบครัวของหนู'", "👨‍👩‍👧"], ["\"Good night!\"", "'ราตรีสวัสดี' ส้มโอหลับฝันดี", "🌙"]], "hook": "จบซีซั่นแรกแล้ว! เก่งมากที่อ่านจนจบ รอตอนใหม่เร็วๆ นี้นะ 🐱💛", "quiz": ["ก่อนนอนส้มโอทำอะไร?", [["🛁", "อาบน้ำ", true], ["🏫", "ไปโรงเรียน", false], ["🍚", "กินข้าว", false]]]}]; /* ห้องนิทานส้มโอ — ซีรีส์เรื่องสั้น */
 
 /* สติกเกอร์ประจำหมวด — ปลดล็อกเมื่อเรียนจบทุกบทในหมวดนั้น (เก็บสะสม ไม่มีวันหาย) */
 const UNIT_STICKERS = [
@@ -599,9 +653,9 @@ let S = load();
 function load(){
   try{
     const s = JSON.parse(localStorage.getItem('kks-p1'));
-    if(s && s.prog){ if(!s.stickers) s.stickers = []; return s; }
+    if(s && s.prog){ if(!s.stickers) s.stickers = []; if(!s.storiesDone) s.storiesDone = []; return s; }
   }catch(e){}
-  return {stars:0, lessonStars:{}, prog:{}, quest:{day:-1,review:false,learn:false,game:false,bonus:false}, daysDone:0, visits:0, stickers:[]};
+  return {stars:0, lessonStars:{}, prog:{}, quest:{day:-1,review:false,learn:false,game:false,bonus:false}, daysDone:0, visits:0, stickers:[], storiesDone:[]};
 }
 function save(){ try{ localStorage.setItem('kks-p1', JSON.stringify(S)); }catch(e){} pushProgress(); }
 
@@ -641,7 +695,7 @@ async function fetchRestoredState(name, pin){
     const data = await res.json();
     if(data && data.found && data.fullState){
       const parsed = JSON.parse(data.fullState);
-      if(parsed && parsed.prog){ if(!parsed.stickers) parsed.stickers = []; return parsed; }
+      if(parsed && parsed.prog){ if(!parsed.stickers) parsed.stickers = []; if(!parsed.storiesDone) parsed.storiesDone = []; return parsed; }
     }
   }catch(e){ /* เน็ตหลุดหรือหลังบ้านยังไม่พร้อม ก็เริ่มใหม่ในเครื่องนี้ไปก่อน */ }
   return null;
@@ -771,7 +825,7 @@ function toast(msg, kind){
   toastTimer = setTimeout(()=>t.className='toast', 1700);
 }
 function show(id){
-  ['welcome','login','home','game','match','celebrate','book','stickers'].forEach(s=>$(s).classList.add('hidden'));
+  ['welcome','login','home','game','match','celebrate','book','stickers','storylist','storyread'].forEach(s=>$(s).classList.add('hidden'));
   $(id).classList.remove('hidden');
   window.scrollTo(0,0);
 }
@@ -1343,6 +1397,79 @@ function openBook(){
 }
 
 /* ================= sheets ================= */
+/* ================= ห้องนิทานส้มโอ ================= */
+let curStory=null, storyStep=0;
+function lessonsDoneCount(){ let n=0; for(const k in S.lessonStars){ if(S.lessonStars[k]>0) n++; } return n; }
+function openStories(){
+  stopAllAudio();
+  const done=lessonsDoneCount();
+  $('story-list').innerHTML = STORIES.map(st=>{
+    const unlocked = done >= st.unlock;
+    const finished = (S.storiesDone||[]).includes(st.id);
+    if(!unlocked){
+      return `<div class="story-item locked"><div class="si-cover">🔒</div>
+        <div class="si-txt"><b>${st.title}</b><small>เรียนอีก ${st.unlock-done} บทก็ปลดล็อก</small></div></div>`;
+    }
+    return `<div class="story-item"><div class="si-cover">${st.cover}</div>
+      <div class="si-txt"><b>${st.title}</b><small>${finished?'อ่านจบแล้ว · อ่านซ้ำได้':'แตะเพื่ออ่าน'}</small></div>
+      ${finished?'<span class="si-done">✓</span>':''}
+      <button class="si-go" data-id="${st.id}">${finished?'อ่านอีก':'อ่านเลย'}</button></div>`;
+  }).join('');
+  document.querySelectorAll('#story-list .si-go').forEach(b=>b.onclick=()=>startStory(b.dataset.id));
+  show('storylist');
+}
+function startStory(id){ curStory=STORIES.find(s=>s.id===id); storyStep=0; $('story-title').innerHTML='<b>'+curStory.title+'</b>'; renderStorySent(); show('storyread'); }
+function renderStoryDots(){
+  const n=curStory.sents.length;
+  $('story-dots').innerHTML=Array.from({length:n},(_,i)=>`<div class="dot ${i<storyStep?'done':i===storyStep?'now':''}"></div>`).join('');
+}
+function renderStorySent(){
+  stopAllAudio(); renderStoryDots();
+  const [en,th,e]=curStory.sents[storyStep];
+  const last=storyStep===curStory.sents.length-1;
+  $('story-body').innerHTML=`
+    <div class="sr-sent">
+      <div class="sr-emoji">${e}</div>
+      <div class="sr-en en"></div>
+      <div class="sr-th"></div>
+      <button class="hear-btn" id="sr-hear">🔊 ฟังอีกครั้ง</button>
+    </div>
+    <button class="next-btn" id="sr-next" style="margin-top:14px">${last?'อ่านจบแล้ว! ไปตอบคำถาม →':'ประโยคต่อไป →'}</button>`;
+  $('story-body').querySelector('.sr-en').textContent=en;   /* textContent ปลอดภัยกับเครื่องหมายคำพูด */
+  $('story-body').querySelector('.sr-th').textContent=th;
+  $('sr-hear').onclick=()=>playWordThenThai(en);
+  $('sr-next').onclick=storyNext;
+  setTimeout(()=>playWordThenThai(en), 400);
+}
+function storyNext(){ if(storyStep<curStory.sents.length-1){ storyStep++; renderStorySent(); } else renderStoryQuiz(); }
+function renderStoryQuiz(){
+  stopAllAudio(); renderStoryDots();
+  const [q,opts]=curStory.quiz;
+  $('story-body').innerHTML=`
+    <div class="sr-sent"><div class="sr-emoji">🤔</div><div class="sr-en" id="sr-q" style="font-size:1.15rem"></div></div>
+    <div style="margin-top:14px" id="sr-opts">
+      ${opts.map(o=>`<button class="sr-quiz-choice" data-c="${o[2]?1:0}"><span class="qc-emo">${o[0]}</span><span class="qc-lbl"></span></button>`).join('')}
+    </div>`;
+  $('sr-q').textContent=q;
+  const btns=[...document.querySelectorAll('#sr-opts .sr-quiz-choice')];
+  btns.forEach((b,i)=>{
+    b.querySelector('.qc-lbl').textContent=opts[i][1];
+    b.onclick=()=>{
+      if(b.dataset.c==='1'){ b.classList.add('right'); try{sfxRight();}catch(e){} btns.forEach(x=>x.onclick=null); setTimeout(finishStory,700); }
+      else { b.classList.add('wrong'); try{sfxWrong();}catch(e){} toast('ยังไม่ใช่ ลองนึกถึงเรื่องดูอีกทีนะ 😊','soft'); setTimeout(()=>b.classList.remove('wrong'),600); }
+    };
+  });
+}
+function finishStory(){
+  const first=!(S.storiesDone||[]).includes(curStory.id);
+  if(first){ (S.storiesDone=S.storiesDone||[]).push(curStory.id); S.stars+=2; }
+  save();
+  $('cheer-emoji').textContent='📖';
+  $('cheer-title').textContent=first?'อ่านจบแล้ว! +2 ⭐':'อ่านจบอีกรอบ! เก่งมาก';
+  $('cheer-text').textContent=curStory.hook;
+  $('learned-row').innerHTML='';
+  show('celebrate'); cheerBuddy();
+}
 function openNote(){ $('note-overlay').classList.remove('hidden'); }
 function closeNote(){ $('note-overlay').classList.add('hidden'); }
 function openSound(){ $('sound-overlay').classList.remove('hidden'); }
