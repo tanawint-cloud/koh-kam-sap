@@ -63,10 +63,10 @@
   .quest-bonus{text-align:center;font-size:.78rem;color:var(--ink-soft);margin-top:10px}
   .quest-bonus.won{color:var(--leaf-deep);font-weight:700}
   .finish-line{margin:2px 0 12px}
-  .fl-track{display:flex;align-items:center;gap:6px}
-  .fl-seg{flex:1;height:9px;border-radius:999px;background:var(--line);transition:background .3s}
-  .fl-seg.on{background:linear-gradient(90deg,#F4C36B,#EF6461)}
-  .fl-flag{font-size:1.1rem;margin-left:2px;filter:grayscale(1);opacity:.5;transition:.3s}
+  .fl-track{display:flex;align-items:center;gap:7px}
+  .fl-bar{flex:1;height:10px;border-radius:999px;background:var(--line);overflow:hidden}
+  .fl-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#F4C36B,#EF6461);transition:width .5s}
+  .fl-flag{font-size:1.15rem;filter:grayscale(1);opacity:.5;transition:.3s}
   .finish-line.done .fl-flag{filter:none;opacity:1;transform:scale(1.15)}
   .fl-label{text-align:center;font-size:.76rem;color:var(--ink-soft);margin-top:6px}
   .finish-line.done .fl-label{color:var(--leaf-deep);font-weight:700}
@@ -303,7 +303,7 @@
     <div class="quest-card">
       <h2>🗺️ ภารกิจวันนี้ <span class="day-badge hidden" id="day-badge">ถึงเส้นชัยแล้ว! 🏁</span></h2>
       <div class="finish-line" id="finish-line">
-        <div class="fl-track"><span class="fl-seg"></span><span class="fl-seg"></span><span class="fl-seg"></span><span class="fl-flag">🏁</span></div>
+        <div class="fl-track"><div class="fl-bar"><div class="fl-fill" id="fl-fill"></div></div><span class="fl-flag">🏁</span></div>
         <div class="fl-label" id="fl-label"></div>
       </div>
       <div id="quest-list"></div>
@@ -837,6 +837,8 @@ function toast(msg, kind){
   toastTimer = setTimeout(()=>t.className='toast', 1700);
 }
 function show(id){
+  accrueTime();                       /* เก็บเวลาของหน้าที่กำลังจะออกก่อน */
+  curScreen = id; screenEnter = Date.now();
   ['welcome','login','home','game','match','celebrate','book','stickers','storylist','storyread'].forEach(s=>$(s).classList.add('hidden'));
   $(id).classList.remove('hidden');
   window.scrollTo(0,0);
@@ -901,9 +903,29 @@ function sfxRight(){ try{ tone(523.25,0,.14,.16); tone(783.99,.1,.22,.16); }catc
 function sfxWrong(){ try{ tone(330,0,.18,.09); }catch(e){} }
 
 /* ================= home ================= */
+/* ===== เส้นชัยวันนี้แบบเวลา — เป้าหมายเรียน ~30 นาที/วัน ===== */
+const DAILY_GOAL_SEC = 30*60;
+let curScreen='home', screenEnter=Date.now();
+function saveLocalOnly(){ try{ localStorage.setItem('kks-p1', JSON.stringify(S)); }catch(e){} }
+function accrueTime(){
+  if(['game','match','storyread'].includes(curScreen)){
+    const dt = Math.min(Date.now()-screenEnter, 7*60*1000);  /* cap 7 นาที/ช่วง กันเปิดค้างแล้วเดินหนี */
+    if(dt>1000){ S.todaySec=(S.todaySec||0)+Math.round(dt/1000); saveLocalOnly(); checkDayGoal(); }
+  }
+  screenEnter = Date.now();
+}
+function checkDayGoal(){
+  if(!S.quest.bonus && (S.todaySec||0) >= DAILY_GOAL_SEC){
+    S.quest.bonus = true; dayJustFinished = true;
+    S.stars += 1; S.daysDone += 1; save();
+    try{ sfxRight(); }catch(e){}
+    toast('🏁 ถึงเส้นชัยวันนี้แล้ว! วันนี้เรียนครบ ~30 นาที เก่งมากๆ พักได้เลยนะ 😊','good');
+  }
+}
 function ensureQuestDay(){
   if(S.quest.day !== today()){
     S.quest = {day:today(), review:false, learn:false, game:false, bonus:false};
+    S.todaySec = 0;
     save();
   }
 }
@@ -960,15 +982,16 @@ function renderHome(){
   }
   $('quest-list').innerHTML = qh;
 
-  /* เส้นชัยวันนี้ — โชว์ให้ชัดว่าเหลืออีกกี่อย่างถึงจะ "จบวันนี้" */
-  const learnDoneHome = q.learn || nextLessonIdx()===-1;
-  const doneCount = (q.review?1:0) + (learnDoneHome?1:0) + (q.game?1:0);
+  /* เส้นชัยวันนี้ = เวลาเรียนสะสมวันนี้ถึง ~30 นาที */
+  const sec = S.todaySec||0;
+  const mins = Math.floor(sec/60);
+  const pct = Math.min(100, Math.round(sec/DAILY_GOAL_SEC*100));
   const fl = $('finish-line');
-  [...fl.querySelectorAll('.fl-seg')].forEach((s,i)=>s.classList.toggle('on', i<doneCount));
+  $('fl-fill').style.width = pct + '%';
   fl.classList.toggle('done', q.bonus);
   $('fl-label').textContent = q.bonus
     ? '🏁 ถึงเส้นชัยวันนี้แล้ว! วันนี้พอแล้ว เก่งมาก 😊'
-    : `ทำอีก ${3-doneCount} อย่างก็ถึงเส้นชัยวันนี้ 🏁`;
+    : `เรียนวันนี้ไปแล้ว ${mins} นาที · เป้าหมาย 30 นาที 🏁`;
 
   const bonusEl = $('quest-bonus');
   const dayBadge = $('day-badge');
@@ -977,7 +1000,7 @@ function renderHome(){
     bonusEl.className='quest-bonus won';
     dayBadge.classList.remove('hidden');
   } else {
-    bonusEl.textContent = 'ทำครบ 3 อย่างวันนี้ = ถึงเส้นชัย รับดาวโบนัส +1 ⭐';
+    bonusEl.textContent = 'เรียนเล่นวันนี้ให้ครบ ~30 นาที = ถึงเส้นชัย รับดาวโบนัส +1 ⭐ (จะทำบทเรียน ทวนคำ เกม หรืออ่านนิทานก็ได้)';
     bonusEl.className='quest-bonus';
     dayBadge.classList.add('hidden');
   }
@@ -1023,13 +1046,8 @@ function questProgressCheck(){
   const q = S.quest;
   /* เรียนครบทุกบทแล้ว ไม่มีบทใหม่ให้เรียน — ถือว่าเควสต์ "เรียนคำใหม่" สำเร็จโดยอัตโนมัติ ไม่งั้นโบนัสรายวันจะไม่มีวันครบ */
   const learnDone = q.learn || nextLessonIdx()===-1;
-  if(!q.bonus && q.review && learnDone && q.game){
-    q.bonus = true;
-    dayJustFinished = true;   /* เพิ่งถึงเส้นชัยวันนี้ครั้งแรก — โชว์ moment พิเศษ */
-    S.stars += 1;
-    S.daysDone += 1;
-    save();
-  }
+  /* หมายเหตุ: การ "จบวันนี้" ย้ายไปวัดด้วยเวลาเรียน ~30 นาที (checkDayGoal) แล้ว
+     ฟังก์ชันนี้เก็บไว้เฉยๆ เผื่อ logic เดิมเรียก — เควสต์ 3 อย่างยังเป็นกิจกรรมแนะนำ (ให้ดาวของตัวเอง) */
 }
 function goHome(){
   stopAllAudio();
@@ -1331,11 +1349,12 @@ function finishReview(){
   cheerBuddy();
 }
 function maybeBonusText(){
+  accrueTime();   /* นับเวลากิจกรรมที่เพิ่งจบ เผื่อครบ 30 นาทีพอดี จะได้โชว์เส้นชัยในจอนี้เลย */
   if(dayJustFinished){
-    /* moment เส้นชัย — โชว์เด่นๆ ครั้งเดียวตอนเพิ่งครบวันนี้ */
+    /* moment เส้นชัย — โชว์เด่นๆ ครั้งเดียวตอนเพิ่งเรียนครบ ~30 นาทีวันนี้ */
     $('cheer-emoji').textContent = '🏁';
     $('cheer-title').textContent = 'ถึงเส้นชัยวันนี้แล้ว!';
-    $('cheer-text').textContent = 'วันนี้ทำครบทุกอย่าง เก่งมากๆ รับ +1 ⭐ ไปเลย! พักได้แล้วนะ 😊 (ยังสนุกอยู่? เล่นต่อได้เรื่อยๆ ไม่ต้องรีบ พรุ่งนี้มีเส้นชัยใหม่รอ!)';
+    $('cheer-text').textContent = 'วันนี้เรียนครบ ~30 นาทีแล้ว เก่งมากๆ รับ +1 ⭐ ไปเลย! พักได้แล้วนะ 😊 (ยังสนุกอยู่? เล่นต่อได้เรื่อยๆ ไม่ต้องรีบ พรุ่งนี้มีเส้นชัยใหม่รอ!)';
     dayJustFinished = false;
   } else if(S.quest.bonus){
     $('cheer-text').textContent += ' · วันนี้ผ่านเส้นชัยแล้วนะ เล่นต่อได้ ไม่ต้องรีบ 😊';
@@ -1495,6 +1514,7 @@ function finishStory(){
   $('cheer-title').textContent=first?'อ่านจบแล้ว! +2 ⭐':'อ่านจบอีกรอบ! เก่งมาก';
   $('cheer-text').textContent=curStory.hook;
   $('learned-row').innerHTML='';
+  maybeBonusText();
   show('celebrate'); cheerBuddy();
 }
 function openNote(){ $('note-overlay').classList.remove('hidden'); }
@@ -1542,6 +1562,12 @@ if(PROFILE){ renderHome(); show('home'); } else { startWelcome(); }
 
 /* ระบบอัปเดตอัตโนมัติ (service worker) — เปิดแอปตอนมีเน็ตได้เวอร์ชันล่าสุดเสมอ + เล่นออฟไลน์ได้ */
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); }); }
+
+/* เก็บเวลาเรียนตอนสลับแท็บ/ปิดหน้า และไม่นับเวลาช่วงที่ไม่ได้เปิดดู */
+document.addEventListener('visibilitychange', ()=>{
+  if(document.hidden){ accrueTime(); if(PROFILE) save(); }
+  else { screenEnter = Date.now(); }
+});
 
 /* ทางลับสำหรับพี่วิน: แตะโลโก้ 5 ครั้งเร็วๆ (ภายใน 1.5 วิ ต่อครั้ง) → เปิดหน้า Dashboard หลังบ้าน
    ไม่ฝังรหัสในเกม หน้า Dashboard จะถามรหัสเอง เด็กแตะเล่นทั่วไปจะไม่บังเอิญเข้า */
