@@ -62,6 +62,14 @@
   .quest.off{opacity:.55;cursor:default}
   .quest-bonus{text-align:center;font-size:.78rem;color:var(--ink-soft);margin-top:10px}
   .quest-bonus.won{color:var(--leaf-deep);font-weight:700}
+  .finish-line{margin:2px 0 12px}
+  .fl-track{display:flex;align-items:center;gap:6px}
+  .fl-seg{flex:1;height:9px;border-radius:999px;background:var(--line);transition:background .3s}
+  .fl-seg.on{background:linear-gradient(90deg,#F4C36B,#EF6461)}
+  .fl-flag{font-size:1.1rem;margin-left:2px;filter:grayscale(1);opacity:.5;transition:.3s}
+  .finish-line.done .fl-flag{filter:none;opacity:1;transform:scale(1.15)}
+  .fl-label{text-align:center;font-size:.76rem;color:var(--ink-soft);margin-top:6px}
+  .finish-line.done .fl-label{color:var(--leaf-deep);font-weight:700}
 
   .world-label{font-size:.78rem;font-weight:700;color:var(--leaf-deep);letter-spacing:.04em;margin:6px 2px 0}
   .stage{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);cursor:pointer;text-align:left;width:100%;font-family:inherit;color:inherit;transition:transform .12s ease}
@@ -293,7 +301,11 @@
     </div>
 
     <div class="quest-card">
-      <h2>🗺️ ภารกิจวันนี้ <span class="day-badge hidden" id="day-badge">ทำครบแล้ว! 🎉</span></h2>
+      <h2>🗺️ ภารกิจวันนี้ <span class="day-badge hidden" id="day-badge">ถึงเส้นชัยแล้ว! 🏁</span></h2>
+      <div class="finish-line" id="finish-line">
+        <div class="fl-track"><span class="fl-seg"></span><span class="fl-seg"></span><span class="fl-seg"></span><span class="fl-flag">🏁</span></div>
+        <div class="fl-label" id="fl-label"></div>
+      </div>
       <div id="quest-list"></div>
       <div class="quest-bonus" id="quest-bonus"></div>
     </div>
@@ -948,14 +960,24 @@ function renderHome(){
   }
   $('quest-list').innerHTML = qh;
 
+  /* เส้นชัยวันนี้ — โชว์ให้ชัดว่าเหลืออีกกี่อย่างถึงจะ "จบวันนี้" */
+  const learnDoneHome = q.learn || nextLessonIdx()===-1;
+  const doneCount = (q.review?1:0) + (learnDoneHome?1:0) + (q.game?1:0);
+  const fl = $('finish-line');
+  [...fl.querySelectorAll('.fl-seg')].forEach((s,i)=>s.classList.toggle('on', i<doneCount));
+  fl.classList.toggle('done', q.bonus);
+  $('fl-label').textContent = q.bonus
+    ? '🏁 ถึงเส้นชัยวันนี้แล้ว! วันนี้พอแล้ว เก่งมาก 😊'
+    : `ทำอีก ${3-doneCount} อย่างก็ถึงเส้นชัยวันนี้ 🏁`;
+
   const bonusEl = $('quest-bonus');
   const dayBadge = $('day-badge');
   if(q.bonus){
-    bonusEl.textContent = '🎁 ภารกิจวันนี้ครบแล้ว! รับดาวโบนัสไปเลย +1 ⭐ แล้วพรุ่งนี้เจอกันนะ';
+    bonusEl.textContent = 'วันนี้ครบแล้ว พักได้เลยนะ 🎉 อยากเล่นต่อก็ได้ ไม่ต้องรีบ — พรุ่งนี้มีเส้นชัยใหม่รออยู่!';
     bonusEl.className='quest-bonus won';
     dayBadge.classList.remove('hidden');
   } else {
-    bonusEl.textContent = 'ทำครบ 3 อย่าง รับดาวโบนัส +1 ⭐';
+    bonusEl.textContent = 'ทำครบ 3 อย่างวันนี้ = ถึงเส้นชัย รับดาวโบนัส +1 ⭐';
     bonusEl.className='quest-bonus';
     dayBadge.classList.add('hidden');
   }
@@ -1003,6 +1025,7 @@ function questProgressCheck(){
   const learnDone = q.learn || nextLessonIdx()===-1;
   if(!q.bonus && q.review && learnDone && q.game){
     q.bonus = true;
+    dayJustFinished = true;   /* เพิ่งถึงเส้นชัยวันนี้ครั้งแรก — โชว์ moment พิเศษ */
     S.stars += 1;
     S.daysDone += 1;
     save();
@@ -1017,6 +1040,7 @@ function goHome(){
 /* ================= lesson engine (teach -> match2 -> mix3) ================= */
 let L=null, lessonIdx=0, phase='meet', step=0, order=[], mistakes=0, roundWrong=0, target=null, mode='lesson';
 let answered=false; /* กันแตะซ้ำ/แตะพลาดในช่วงเสี้ยววินาทีหลังตอบถูก (ก่อนไปข้อถัดไป) ไม่ให้ทำลายชั้นความจำหรือข้ามคำ */
+let dayJustFinished=false; /* true ชั่วคราวตอนเพิ่งครบ 3 ภารกิจ = ถึงเส้นชัยวันนี้ครั้งแรก */
 
 function startLesson(i){
   L = LESSONS[i]; lessonIdx = i; mode='lesson';
@@ -1307,11 +1331,14 @@ function finishReview(){
   cheerBuddy();
 }
 function maybeBonusText(){
-  if(S.quest.bonus && !S.questBonusShown){
-    /* โชว์ครั้งเดียวต่อวัน */
-  }
-  if(S.quest.bonus){
-    $('cheer-text').textContent += ' — และภารกิจวันนี้ครบ 3 อย่างแล้ว! 🎁 โบนัส +1 ⭐';
+  if(dayJustFinished){
+    /* moment เส้นชัย — โชว์เด่นๆ ครั้งเดียวตอนเพิ่งครบวันนี้ */
+    $('cheer-emoji').textContent = '🏁';
+    $('cheer-title').textContent = 'ถึงเส้นชัยวันนี้แล้ว!';
+    $('cheer-text').textContent = 'วันนี้ทำครบทุกอย่าง เก่งมากๆ รับ +1 ⭐ ไปเลย! พักได้แล้วนะ 😊 (ยังสนุกอยู่? เล่นต่อได้เรื่อยๆ ไม่ต้องรีบ พรุ่งนี้มีเส้นชัยใหม่รอ!)';
+    dayJustFinished = false;
+  } else if(S.quest.bonus){
+    $('cheer-text').textContent += ' · วันนี้ผ่านเส้นชัยแล้วนะ เล่นต่อได้ ไม่ต้องรีบ 😊';
   }
 }
 
