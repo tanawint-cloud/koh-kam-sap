@@ -257,6 +257,27 @@
   .sr-quiz-choice .qc-emo{font-size:1.6rem}
   .sr-quiz-choice.right{border-color:var(--teal,#149E92);background:#E4F4F1}
   .sr-quiz-choice.wrong{border-color:#E88;background:#FBE4E2}
+  /* ===== ฝึกพูด ===== */
+  .speak-card{background:linear-gradient(120deg,#E7F3FF,#E9E0FF);border-color:#B9C8F4}
+  .speak-card .sc-txt small{color:#5a5aa0}
+  .speak-card .sc-go{color:#5b4bd6}
+  .sp-card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:22px 18px;text-align:center;box-shadow:var(--shadow)}
+  .sp-emoji{font-size:3.6rem;line-height:1;margin-bottom:6px}
+  .sp-en{font-size:1.8rem;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .sp-th{font-size:1rem;color:var(--ink-soft)}
+  .sp-read{display:inline-block;font-size:.95rem;color:#8a5a00;background:#FFF6E3;border:1.5px dashed #E8B04B;border-radius:999px;padding:4px 13px;margin:8px 0 4px}
+  .mic-btn{width:96px;height:96px;border-radius:50%;border:0;background:linear-gradient(135deg,#7C8CF0,#B57BE8);color:#fff;font-size:2.4rem;cursor:pointer;margin:16px auto 6px;display:block;box-shadow:0 6px 16px rgba(120,110,230,.4);transition:transform .15s}
+  .mic-btn:active{transform:scale(.94)}
+  .mic-btn.listening{animation:micpulse 1s infinite;background:linear-gradient(135deg,#EF6461,#F49B6B)}
+  @keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(239,100,97,.5)}50%{box-shadow:0 0 0 16px rgba(239,100,97,0)}}
+  @media(prefers-reduced-motion:reduce){.mic-btn.listening{animation:none}}
+  .sp-hint{font-size:.82rem;color:var(--ink-soft);margin-top:4px}
+  .sp-result{min-height:26px;font-weight:700;margin-top:10px}
+  .sp-result.ok{color:var(--leaf-deep,#149E92)}
+  .sp-result.no{color:var(--coral-ink,#C7413F)}
+  .sp-row{display:flex;gap:10px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .sp-mini{background:#EAF4FD;border:2px solid #CBE3F7;color:#2F6EA8;border-radius:12px;padding:9px 14px;font-size:.85rem;font-weight:700;font-family:inherit;cursor:pointer}
+  .sp-fallback{background:#FFF6E3;border:1.5px solid #E8B04B;border-radius:14px;padding:14px 16px;font-size:.85rem;color:#7a5b12;line-height:1.6;margin-top:10px}
 </style>
 
 <div class="app">
@@ -313,6 +334,12 @@
     <button class="story-card" onclick="openStories()">
       <span class="sc-emoji">📖</span>
       <span class="sc-txt"><b>ห้องนิทานส้มโอ</b><small id="story-sub">อ่าน+ฟังเรื่องสนุกๆ ของเจ้าแมวส้มโอ</small></span>
+      <span class="sc-go">▶</span>
+    </button>
+
+    <button class="story-card speak-card" onclick="openSpeak()">
+      <span class="sc-emoji">🎤</span>
+      <span class="sc-txt"><b>ฝึกพูดกับส้มโอ</b><small>พูดคำอังกฤษออกเสียง แล้วส้มโอช่วยฟังให้</small></span>
       <span class="sc-go">▶</span>
     </button>
 
@@ -405,6 +432,17 @@
     </div>
     <div class="dots" id="story-dots"></div>
     <div id="story-body"></div>
+  </div>
+
+  <!-- ============ SPEAK (ฝึกพูด) ============ -->
+  <div id="speak" class="hidden">
+    <div class="game-top">
+      <button class="back" onclick="goHome()">←</button>
+      <div class="phase-chip"><b>ฝึกพูดกับส้มโอ</b> — พูดออกเสียงตามคำเลย</div>
+      <div style="width:42px"></div>
+    </div>
+    <div class="dots" id="speak-dots"></div>
+    <div id="speak-body"></div>
   </div>
 
 </div>
@@ -839,7 +877,7 @@ function toast(msg, kind){
 function show(id){
   accrueTime();                       /* เก็บเวลาของหน้าที่กำลังจะออกก่อน */
   curScreen = id; screenEnter = Date.now();
-  ['welcome','login','home','game','match','celebrate','book','stickers','storylist','storyread'].forEach(s=>$(s).classList.add('hidden'));
+  ['welcome','login','home','game','match','celebrate','book','stickers','storylist','storyread','speak'].forEach(s=>$(s).classList.add('hidden'));
   $(id).classList.remove('hidden');
   window.scrollTo(0,0);
 }
@@ -908,7 +946,7 @@ const DAILY_GOAL_SEC = 30*60;
 let curScreen='home', screenEnter=Date.now();
 function saveLocalOnly(){ try{ localStorage.setItem('kks-p1', JSON.stringify(S)); }catch(e){} }
 function accrueTime(){
-  if(['game','match','storyread'].includes(curScreen)){
+  if(['game','match','storyread','speak'].includes(curScreen)){
     const dt = Math.min(Date.now()-screenEnter, 7*60*1000);  /* cap 7 นาที/ช่วง กันเปิดค้างแล้วเดินหนี */
     if(dt>1000){ S.todaySec=(S.todaySec||0)+Math.round(dt/1000); saveLocalOnly(); }
   }
@@ -1514,6 +1552,73 @@ function finishStory(){
   $('learned-row').innerHTML='';
   maybeBonusText();
   show('celebrate'); cheerBuddy();
+}
+/* ================= ฝึกพูด (Web Speech) ================= */
+let spWords=[], spStep=0, spListening=false;
+function speechSupported(){ return !!(window.SpeechRecognition||window.webkitSpeechRecognition); }
+function normSp(s){ return String(s).toLowerCase().replace(/[^a-z ]/g,'').replace(/\s+/g,' ').trim(); }
+function lev(a,b){ const m=a.length,n=b.length,d=[]; for(let i=0;i<=m;i++)d[i]=[i]; for(let j=0;j<=n;j++)d[0][j]=j;
+  for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)d[i][j]=Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1)); return d[m][n]; }
+function saidOk(alts,target){ const t=normSp(target); if(!t) return false;
+  return alts.some(a=>{ a=normSp(a); if(!a) return false; return a===t||a.includes(t)||t.includes(a)||lev(a,t)<=Math.max(1,Math.floor(t.length*0.25)); }); }
+function openSpeak(){
+  stopAllAudio();
+  const pool=learnedList().filter(w=>!w.isPhrase);
+  if(pool.length===0){ toast('เรียนคำใหม่กับส้มโอสัก 1 บทก่อนนะ แล้วค่อยมาฝึกพูด 😊','soft'); return; }
+  spWords=shuffle(pool).slice(0,6); spStep=0;
+  show('speak'); renderSpeak();
+}
+function renderSpeakDots(){ const n=spWords.length; $('speak-dots').innerHTML=Array.from({length:n},(_,i)=>`<div class="dot ${i<spStep?'done':i===spStep?'now':''}"></div>`).join(''); }
+function renderSpeak(){
+  stopAllAudio(); renderSpeakDots(); spListening=false;
+  const w=spWords[spStep]; const supported=speechSupported();
+  $('speak-body').innerHTML=`
+    <div class="sp-card">
+      <div class="sp-emoji">${w.e}</div>
+      <div class="sp-en en">${w.w}</div>
+      <div class="sp-th">${w.th}</div>
+      ${READ[w.w]?`<div class="sp-read">🗣️ อ่านว่า “${READ[w.w]}”</div>`:''}
+      <div><button class="sp-mini" id="sp-hear">🔊 ฟังเสียงต้นแบบ</button></div>
+      ${supported?`
+        <button class="mic-btn" id="sp-mic">🎤</button>
+        <div class="sp-hint" id="sp-hint">แตะไมค์ แล้วพูดคำนี้ดังๆ</div>
+        <div class="sp-result" id="sp-result"></div>
+        <div class="sp-row"><button class="sp-mini" id="sp-skip">ข้ามไปก่อน →</button></div>`
+      :`
+        <div class="sp-fallback">เบราว์เซอร์นี้ยังให้ส้มโอฟังเสียงพูดไม่ได้ 😅 (เปิดด้วย <b>Chrome</b> บนคอม/แอนดรอยด์จะฟังให้ได้)<br>ตอนนี้ลอง <b>ฟังแล้วพูดตาม</b> ดูก่อนนะ!</div>
+        <div class="sp-row"><button class="sp-mini" id="sp-selfok">พูดตามแล้ว! คำต่อไป →</button></div>`}
+    </div>`;
+  $('sp-hear').onclick=()=>playWord(w.w);
+  setTimeout(()=>playWord(w.w),400);
+  if(supported){ $('sp-mic').onclick=()=>micTap(w); $('sp-skip').onclick=speakNext; }
+  else { $('sp-selfok').onclick=speakNext; }
+}
+function micTap(w){
+  if(spListening) return;
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  let r; try{ r=new SR(); }catch(e){ $('sp-result').textContent='เปิดไมค์ไม่ได้ ลองใหม่นะ'; return; }
+  r.lang='en-US'; r.interimResults=false; r.maxAlternatives=4;
+  const mic=$('sp-mic'), hint=$('sp-hint'), res=$('sp-result');
+  spListening=true; mic.classList.add('listening'); hint.textContent='กำลังฟัง... พูดเลย! 🎧'; res.textContent=''; res.className='sp-result';
+  let handled=false;
+  r.onresult=e=>{ handled=true; const alts=[...e.results[0]].map(a=>a.transcript);
+    if(saidOk(alts,w.w)){ res.textContent='เก่งมาก! พูดชัดเลย 🎉'; res.className='sp-result ok'; try{sfxRight();}catch(_){} setTimeout(speakNext,1100); }
+    else { res.textContent='ได้ยินว่า “'+(normSp(alts[0]||'')||'...')+'” · ลองอีกทีนะ ฟังต้นแบบก่อนก็ได้ 😊'; res.className='sp-result no'; try{sfxWrong();}catch(_){} }
+  };
+  r.onerror=e=>{ handled=true;
+    if(e.error==='not-allowed'||e.error==='service-not-allowed') res.textContent='ต้องกดอนุญาตใช้ไมโครโฟนในเบราว์เซอร์ก่อนนะ';
+    else if(e.error==='no-speech') res.textContent='ไม่ได้ยินเสียงเลย ลองพูดดังๆ อีกทีนะ';
+    else res.textContent='ลองอีกทีนะ';
+    res.className='sp-result no'; };
+  r.onend=()=>{ spListening=false; mic.classList.remove('listening'); if(!handled) hint.textContent='แตะไมค์ แล้วพูดคำนี้ดังๆ'; };
+  try{ r.start(); }catch(e){ spListening=false; mic.classList.remove('listening'); }
+}
+function speakNext(){ if(spStep<spWords.length-1){ spStep++; renderSpeak(); } else finishSpeak(); }
+function finishSpeak(){
+  $('cheer-emoji').textContent='🎤'; $('cheer-title').textContent='ฝึกพูดครบแล้ว! เก่งมาก';
+  $('cheer-text').textContent='กล้าพูดออกเสียงคือเก่งที่สุดเลย ยิ่งพูดยิ่งชัดขึ้นเรื่อยๆ นะ 🌟';
+  $('learned-row').innerHTML='';
+  show('celebrate'); cheerBuddy();   /* show() จะเก็บเวลาเรียนของหน้า speak ให้เอง */
 }
 function openNote(){ $('note-overlay').classList.remove('hidden'); }
 function closeNote(){ $('note-overlay').classList.add('hidden'); }
