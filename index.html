@@ -910,18 +910,12 @@ function saveLocalOnly(){ try{ localStorage.setItem('kks-p1', JSON.stringify(S))
 function accrueTime(){
   if(['game','match','storyread'].includes(curScreen)){
     const dt = Math.min(Date.now()-screenEnter, 7*60*1000);  /* cap 7 นาที/ช่วง กันเปิดค้างแล้วเดินหนี */
-    if(dt>1000){ S.todaySec=(S.todaySec||0)+Math.round(dt/1000); saveLocalOnly(); checkDayGoal(); }
+    if(dt>1000){ S.todaySec=(S.todaySec||0)+Math.round(dt/1000); saveLocalOnly(); }
   }
   screenEnter = Date.now();
 }
-function checkDayGoal(){
-  if(!S.quest.bonus && (S.todaySec||0) >= DAILY_GOAL_SEC){
-    S.quest.bonus = true; dayJustFinished = true;
-    S.stars += 1; S.daysDone += 1; save();
-    try{ sfxRight(); }catch(e){}
-    toast('🏁 ถึงเส้นชัยวันนี้แล้ว! วันนี้เรียนครบ ~30 นาที เก่งมากๆ พักได้เลยนะ 😊','good');
-  }
-}
+/* เก็บเวลาเรียนไว้ให้ Dashboard พี่วินดู (ไม่ใช้ตัดสินเส้นชัยแล้ว — เส้นชัยใช้ "แผนประจำวัน" แทน) */
+function checkDayGoal(){}
 function ensureQuestDay(){
   if(S.quest.day !== today()){
     S.quest = {day:today(), review:false, learn:false, game:false, bonus:false};
@@ -974,24 +968,23 @@ function renderHome(){
   }
 
   if(learned.length<3){
-    qh += questRow('🃏','เกมเปิดการ์ดคู่','จะเปิดเมื่อเรียนครบ 3 คำแรก', q.game, true, '');
+    qh += questRow('🎁','โบนัส: เกม / นิทาน','จะเปิดเมื่อเรียนครบ 3 คำแรก', q.game, true, '');
   } else if(q.game){
-    qh += questRow('🃏','เกมเปิดการ์ดคู่','สนุกมั้ยล่ะ พรุ่งนี้มีอีกนะ', true, false, '');
+    qh += questRow('🎁','โบนัส: เกม / นิทาน','เยี่ยม! วันนี้ครบแล้ว', true, false, '');
   } else {
-    qh += questRow('🃏','เกมเปิดการ์ดคู่','จับคู่รูปกับคำที่เรียนแล้ว', false, false, 'startMatch()');
+    qh += questRow('🎁','โบนัส: เกม / นิทาน','เล่นเกมจับคู่ หรือ อ่านนิทาน 1 อย่างก็ได้', false, false, 'startMatch()');
   }
   $('quest-list').innerHTML = qh;
 
-  /* เส้นชัยวันนี้ = เวลาเรียนสะสมวันนี้ถึง ~30 นาที */
-  const sec = S.todaySec||0;
-  const mins = Math.floor(sec/60);
-  const pct = Math.min(100, Math.round(sec/DAILY_GOAL_SEC*100));
+  /* เส้นชัยวันนี้ = แผนประจำวันครบ 3 อย่าง */
+  const learnDoneHome = q.learn || nextLessonIdx()===-1;
+  const doneCount = (q.review?1:0) + (learnDoneHome?1:0) + (q.game?1:0);
   const fl = $('finish-line');
-  $('fl-fill').style.width = pct + '%';
+  $('fl-fill').style.width = Math.round(doneCount/3*100) + '%';
   fl.classList.toggle('done', q.bonus);
   $('fl-label').textContent = q.bonus
     ? '🏁 ถึงเส้นชัยวันนี้แล้ว! วันนี้พอแล้ว เก่งมาก 😊'
-    : `เรียนวันนี้ไปแล้ว ${mins} นาที · เป้าหมาย 30 นาที 🏁`;
+    : `แผนวันนี้ ${doneCount}/3 · อีก ${3-doneCount} อย่างก็ถึงเส้นชัย 🏁`;
 
   const bonusEl = $('quest-bonus');
   const dayBadge = $('day-badge');
@@ -1000,7 +993,7 @@ function renderHome(){
     bonusEl.className='quest-bonus won';
     dayBadge.classList.remove('hidden');
   } else {
-    bonusEl.textContent = 'เรียนเล่นวันนี้ให้ครบ ~30 นาที = ถึงเส้นชัย รับดาวโบนัส +1 ⭐ (จะทำบทเรียน ทวนคำ เกม หรืออ่านนิทานก็ได้)';
+    bonusEl.textContent = 'ทำแผนวันนี้ให้ครบ 3 อย่าง (เรียนบทใหม่ + ทวนคำ + โบนัส) = ถึงเส้นชัย รับดาวโบนัส +1 ⭐';
     bonusEl.className='quest-bonus';
     dayBadge.classList.add('hidden');
   }
@@ -1046,8 +1039,11 @@ function questProgressCheck(){
   const q = S.quest;
   /* เรียนครบทุกบทแล้ว ไม่มีบทใหม่ให้เรียน — ถือว่าเควสต์ "เรียนคำใหม่" สำเร็จโดยอัตโนมัติ ไม่งั้นโบนัสรายวันจะไม่มีวันครบ */
   const learnDone = q.learn || nextLessonIdx()===-1;
-  /* หมายเหตุ: การ "จบวันนี้" ย้ายไปวัดด้วยเวลาเรียน ~30 นาที (checkDayGoal) แล้ว
-     ฟังก์ชันนี้เก็บไว้เฉยๆ เผื่อ logic เดิมเรียก — เควสต์ 3 อย่างยังเป็นกิจกรรมแนะนำ (ให้ดาวของตัวเอง) */
+  /* เส้นชัยวันนี้ = แผนประจำวันครบ 3 อย่าง (เรียนบทใหม่ + ทวนคำ + โบนัสเกม/นิทาน) */
+  if(!q.bonus && q.review && learnDone && q.game){
+    q.bonus = true; dayJustFinished = true;
+    S.stars += 1; S.daysDone += 1; save();
+  }
 }
 function goHome(){
   stopAllAudio();
@@ -1351,10 +1347,10 @@ function finishReview(){
 function maybeBonusText(){
   accrueTime();   /* นับเวลากิจกรรมที่เพิ่งจบ เผื่อครบ 30 นาทีพอดี จะได้โชว์เส้นชัยในจอนี้เลย */
   if(dayJustFinished){
-    /* moment เส้นชัย — โชว์เด่นๆ ครั้งเดียวตอนเพิ่งเรียนครบ ~30 นาทีวันนี้ */
+    /* moment เส้นชัย — โชว์เด่นๆ ครั้งเดียวตอนเพิ่งทำแผนวันนี้ครบ */
     $('cheer-emoji').textContent = '🏁';
     $('cheer-title').textContent = 'ถึงเส้นชัยวันนี้แล้ว!';
-    $('cheer-text').textContent = 'วันนี้เรียนครบ ~30 นาทีแล้ว เก่งมากๆ รับ +1 ⭐ ไปเลย! พักได้แล้วนะ 😊 (ยังสนุกอยู่? เล่นต่อได้เรื่อยๆ ไม่ต้องรีบ พรุ่งนี้มีเส้นชัยใหม่รอ!)';
+    $('cheer-text').textContent = 'วันนี้ทำแผนครบทุกอย่างแล้ว เก่งมากๆ รับ +1 ⭐ ไปเลย! พักได้แล้วนะ 😊 (ยังสนุกอยู่? เล่นต่อได้เรื่อยๆ ไม่ต้องรีบ พรุ่งนี้มีเส้นชัยใหม่รอ!)';
     dayJustFinished = false;
   } else if(S.quest.bonus){
     $('cheer-text').textContent += ' · วันนี้ผ่านเส้นชัยแล้วนะ เล่นต่อได้ ไม่ต้องรีบ 😊';
@@ -1509,6 +1505,8 @@ function renderStoryQuiz(){
 function finishStory(){
   const first=!(S.storiesDone||[]).includes(curStory.id);
   if(first){ (S.storiesDone=S.storiesDone||[]).push(curStory.id); S.stars+=2; }
+  S.quest.game = true;            /* อ่านนิทานนับเป็น "โบนัส" ของแผนวันนี้ได้ (เหมือนเล่นเกม) */
+  questProgressCheck();
   save();
   $('cheer-emoji').textContent='📖';
   $('cheer-title').textContent=first?'อ่านจบแล้ว! +2 ⭐':'อ่านจบอีกรอบ! เก่งมาก';
