@@ -62,7 +62,7 @@
   .insight .msg{font-size:15.5px;} .insight .msg b{color:var(--coral-ink);}
 
   .kpis{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:16px;}
-  @media(min-width:680px){.kpis{grid-template-columns:repeat(4,1fr);}}
+  @media(min-width:680px){.kpis{grid-template-columns:repeat(auto-fit,minmax(150px,1fr));}}
   .kpi{background:var(--card); border:1.5px solid var(--line); border-radius:16px; padding:14px 15px; box-shadow:var(--shadow); position:relative; overflow:hidden;}
   .kpi .lab{font-size:12.5px; color:var(--ink-soft); display:flex; gap:6px; margin-bottom:7px;}
   .kpi .num{font-family:var(--disp); font-weight:800; font-size:27px; line-height:1; letter-spacing:-.02em;}
@@ -180,6 +180,7 @@ function parse(data){
       name:r[0], pin:r[8], lastPlayed:r[1]?new Date(r[1]):null, summary:r[2]||'',
       stars:+r[3]||0, daysDone:+r[4]||0, wordsLearned:+r[5]||0, mastered:+r[6]||0,
       stickers:(S.stickers||[]).length, lessonStars:S.lessonStars||{}, prog:prog,
+      todaySec:+S.todaySec||0, questDay:(S.quest&&S.quest.day!=null)?S.quest.day:null,
       hist:hist[r[0]]||[], test:isTest(r[0])
     };
   });
@@ -284,9 +285,12 @@ function renderBody(){
     ins = `<b>${esc(p.name)}</b> แม่นแล้ว <b>${mastered} คำ</b> · ${lessonPos}.${streakTxt}.${needTxt}`;
   }
 
+  const studiedTodaySec = (p.questDay===today()) ? p.todaySec : 0;
+  const studiedMin = Math.round(studiedTodaySec/60);
   const kpi=[
     {lab:'🔥 เล่นต่อเนื่อง', num:streak, unit:' วัน', sub:streak>0?'สม่ำเสมอดีมาก':'ยังไม่เริ่ม streak', cls:streak>0?'up':'flat', bar:'var(--gold)'},
     {lab:'🕐 เล่นล่าสุด', txt:relTime(p.lastPlayed), sub:activeToday(p)?'● เล่นวันนี้แล้ว':'ยังไม่ได้เล่นวันนี้', cls:activeToday(p)?'up':'flat', bar:activeToday(p)?'var(--teal)':'var(--ink-soft)'},
+    {lab:'⏱️ เวลาเรียนวันนี้', num:studiedMin, unit:' นาที', sub:studiedMin>=30?'เยอะเลยวันนี้! 🎉':(studiedTodaySec>0?'กำลังเรียนอยู่':'วันนี้ยังไม่ได้เล่น'), cls:studiedTodaySec>0?'up':'flat', bar:'var(--sky)'},
     {lab:'🎯 คำที่จำได้แม่น', num:mastered, unit:'/'+D.WORD_TOTAL, sub:'จากทั้งหมด '+D.WORD_TOTAL+' คำ', cls:'flat', bar:'var(--teal)'},
     {lab:'📚 บทเรียน', num:ldone, unit:'/'+D.LESSON_TOTAL, sub:'⭐ '+p.stars+' · 🎴 '+p.stickers+'/'+D.UNIT_TOTAL, cls:'flat', bar:'var(--coral)'},
   ];
