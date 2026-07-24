@@ -1014,6 +1014,10 @@ function renderHome(){
   }
   $('quest-list').innerHTML = qh;
 
+  /* การ์ดนิทาน: โชว์ความคืบหน้าให้อยากอ่านต่อ */
+  const sdn=(S.storiesDone||[]).length;
+  if($('story-sub')) $('story-sub').textContent = sdn>0 ? `อ่านแล้ว ${sdn}/${STORIES.length} ตอน · มาอ่านต่อกัน!` : 'อ่าน+ฟังเรื่องสนุกๆ ของเจ้าแมวส้มโอ';
+
   /* เส้นชัยวันนี้ = แผนประจำวันครบ 3 อย่าง */
   const learnDoneHome = q.learn || nextLessonIdx()===-1;
   const doneCount = (q.review?1:0) + (learnDoneHome?1:0) + (q.game?1:0);

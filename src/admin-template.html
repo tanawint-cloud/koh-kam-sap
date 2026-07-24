@@ -181,6 +181,7 @@ function parse(data){
       stars:+r[3]||0, daysDone:+r[4]||0, wordsLearned:+r[5]||0, mastered:+r[6]||0,
       stickers:(S.stickers||[]).length, lessonStars:S.lessonStars||{}, prog:prog,
       todaySec:+S.todaySec||0, questDay:(S.quest&&S.quest.day!=null)?S.quest.day:null,
+      storiesRead:(S.storiesDone||[]).length,
       hist:hist[r[0]]||[], test:isTest(r[0])
     };
   });
@@ -282,7 +283,8 @@ function renderBody(){
     const lessonPos = nli===-1?`เรียนครบทุกบทแล้ว เก่งสุดๆ`:`เรียนถึงบทที่ ${nli+1}/${D.LESSON_TOTAL}`;
     const streakTxt = streak>=2?` เล่นต่อเนื่อง <b>${streak} วันติด</b> 🔥`:(activeToday(p)?` วันนี้ก็เล่นแล้ว`:` (ไม่ได้เล่นมา ${relTime(p.lastPlayed)})`);
     const needTxt = needs.length?` ตอนนี้มี <b>${needs.length} คำ</b>ที่ยังต้องช่วย ลองชวนพูดคำพวกนี้ในชีวิตจริงดูนะ`:` ทุกคำที่เรียนไปแม่นดีหมดเลย 👏`;
-    ins = `<b>${esc(p.name)}</b> แม่นแล้ว <b>${mastered} คำ</b> · ${lessonPos}.${streakTxt}.${needTxt}`;
+    const storyTxt = p.storiesRead>0?` · อ่านนิทานไปแล้ว <b>${p.storiesRead}</b> ตอน 📖`:'';
+    ins = `<b>${esc(p.name)}</b> แม่นแล้ว <b>${mastered} คำ</b> · ${lessonPos}${storyTxt}.${streakTxt}.${needTxt}`;
   }
 
   const studiedTodaySec = (p.questDay===today()) ? p.todaySec : 0;
